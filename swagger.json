@@ -1,0 +1,380 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "description": "MEDIA BASE URL : localhost:5000/images/ \n\n Authorization:-(In login Api Token Get)  ",
+      "version": "1.0.0",
+      "title": "Cricket App"
+    },
+    "host": "localhost:5000/",
+    "basePath": "apis",
+    "tags": [
+      {
+        "name": "login",
+        "description": "Login  Operations"
+      },
+      {
+        "name": "Teams",
+        "description": "Team Operations"
+      }
+    ],
+    "paths": {
+      "/login": {
+        "post": {
+          "tags": ["login"],
+          "summary": "Login in app",
+          "operationId": "login",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "mobile_number",
+              "in": "formData",
+              "description": "User Mobile Number",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "type",
+              "in": "formData",
+              "description": "The device type (1.Admin, 2.User,3.scorer)",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Login Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Incorrect Email Or Password"
+            }
+          }
+        }
+      },
+      "/edit_profile": {
+        "post": {
+          "tags": ["login"],
+          "summary": "Edit Profile of user",
+          "operationId": "edit_profile",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+                "name": "id",
+                "in": "formData",
+                "description": "user id from the login api",
+                "required": true,
+                "type": "string"
+            },
+            {
+              "name": "name",
+              "in": "formData",
+              "description": "User Name",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "address",
+              "in": "formData",
+              "description": "User Address",
+              "required": false,
+              "type": "string"
+            },
+            {
+                "name": "dob",
+                "in": "formData",
+                "description": "User DOB",
+                "required": false,
+                "type": "string"
+            },
+            {
+                "name": "email_address",
+                "in": "formData",
+                "description": "User email address",
+                "required": false,
+                "type": "string"
+            },
+           
+            {
+                "name": "gender",
+                "in": "formData",
+                "description": "1.Male, 2.Female,3 Other ",
+                "required": false,
+                "type": "string"
+            },
+            {
+              "name": "profile_photo",
+              "in": "formData",
+              "description": "Profile Photo ",
+              "required": false,
+              "type": "file"
+          }
+            
+          ],
+          "responses": {
+            "200": {
+              "description": "Login Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Incorrect Email Or Password"
+            }
+          }
+        }
+      },
+      "/log_out": {
+        "post": {
+          "tags": ["login"],
+          "summary": "  Logout",
+          "operationId": "log_out",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+                "name": "id",
+                "in": "formData",
+                "description": "user id from the login api",
+                "required": true,
+                "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/create_team": {
+        "post": {
+          "tags": ["Teams"],
+          "summary": "Create Team",
+          "operationId": "create_team",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                  "name": "name",
+                  "in": "formData",
+                  "description": "Team Name",
+                  "required": true,
+                  "type": "string"
+              },
+              {
+                "name": "city",
+                "in": "formData",
+                "description": "Team City",
+                "required": true,
+                "type": "string"
+            },
+            {
+              "name": "team_photo",
+              "in": "formData",
+              "description": "Team Photo",
+              "required": false,
+              "type": "file"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/create_player": {
+        "post": {
+          "tags": ["Teams"],
+          "summary": "Create Team Player",
+          "operationId": "create_player",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                  "name": "mobile_number",
+                  "in": "formData",
+                  "description": "Enter mobile number",
+                  "required": true,
+                  "type": "string"
+              },
+              {
+                "name": "team_id",
+                "in": "formData",
+                "description": "Enter Team id",
+                "required": true,
+                "type": "string"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/player_search": {
+        "get": {
+          "tags": ["Teams"],
+          "summary": "Search User and Player",
+          "operationId": "player_search",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                  "name": "mobile_number",
+                  "in": "query",
+                  "description": "Enter mobile number",
+                  "required": true,
+                  "type": "string"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/team_list": {
+        "get": {
+          "tags": ["Teams"],
+          "summary": "Get All teams  list",
+          "operationId": "team_list",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/team_detail/{team_id}": {
+        "get": {
+          "tags": ["Teams"],
+          "summary": "Get Particular  Team Player list",
+          "operationId": "team_detail",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "team_id",
+              "in": "path",
+              "description": "Enter your team id",
+              "required": true,
+              "type": "number"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "data get  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      }
+    },
+    "securityDefinitions": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    },
+    "definitions": {
+      "ArrayOfTimeSlot": {
+        "type": "array",
+        "description": "",
+        "items": {
+          "$ref": "#/definitions/ArrayOfHours"
+        }
+      },
+  
+      "ArrayOfHours": {
+        "type": "object"
+      }
+    },
+    "schemes": ["http"]
+  }
+  

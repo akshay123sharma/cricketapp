@@ -1,0 +1,24 @@
+{
+    "development": {
+      "username": "root",
+      "password": "",
+      "database": "cricket_app",
+      "host": "127.0.0.1",
+      "dialect": "mysql"
+    },
+    "test": {
+      "username": "root",
+      "password": null,
+      "database": "cricket_app",
+      "host": "127.0.0.1",
+      "dialect": "mysql"
+    },
+    "production": {
+      "username": "root",
+      "password": "Crp-&19!!^@12)-SCA",
+      "database": "cricket_app",
+      "host": "127.0.0.1",
+      "dialect": "mysql"
+    }
+  }
+  
