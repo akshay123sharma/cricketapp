@@ -21,7 +21,7 @@ module.exports = function (sequelize, DataTypes) {
       team_photo: {
         type: DataTypes.STRING(255),
         allowNull: true,
-      }  
+      } 
     },
     {
       sequelize,

@@ -8,6 +8,7 @@ const Op = sequelize.Op;
 const user = db.users;
 const teams = db.teams;
 const team_players = db.team_players;
+const matches = db.matches;
 
 team_players.belongsTo(user, {
     foreignKey: "user_id",
@@ -148,8 +149,19 @@ teamDetail: async (req, res) => {
     } catch (error) {
         commonFunction.errorMesssage(res, "Internal server error", {});
     }
+},
+
+createMatch:async(req,res)=>{
+    try{
+        const requestArr = req.body;
+        const create_match = matches.create(requestArr);
+        if(create_match){
+            commonFunction.successMesssage(res, "Match created Successfully", {});  
+        }else{
+            commonFunction.errorMesssage(res, "Error while match created", {});
+        }
+    }catch(error){
+        commonFunction.errorMesssage(res, "Internal server error", {});
+    }
 }
-
-
-
 }

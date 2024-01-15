@@ -17,6 +17,8 @@ module.exports = function (app) {
     app.route("/apis/player_search").get(verifyTokenMiddleware,teamModule.playerSearch);
     app.route("/apis/team_list").get(verifyTokenMiddleware,teamModule.teamList);
     app.route("/apis/team_detail/:team_id").get(verifyTokenMiddleware,teamModule.teamDetail);
+    app.route("/apis/create_match").post(verifyTokenMiddleware,teamModule.createMatch);
+
 
 
 

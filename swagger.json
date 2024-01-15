@@ -353,6 +353,110 @@
             }
           }
         }
+      },
+      "/create_match": {
+        "post": {
+          "tags": ["Teams"],
+          "summary": "Create match between teams",
+          "operationId": "create_match",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                  "name": "team1_id",
+                  "in": "formData",
+                  "description": "Enter  team 1 id",
+                  "required": true,
+                  "type": "string"
+              },
+              {
+                "name": "team2_id",
+                "in": "formData",
+                "description": "Enter team 2 id",
+                "required": true,
+                "type": "string"
+            },
+            {
+              "name": "total_over",
+              "in": "formData",
+              "description": "Enter total over of match",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "city",
+              "in": "formData",
+              "description": "Enter city of match",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "venue_ground",
+              "in": "formData",
+              "description": "Enter ground of match",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "match_date",
+              "in": "formData",
+              "description": "Enter match date",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "match_time",
+              "in": "formData",
+              "description": "Enter match time",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "scorer_id",
+              "in": "formData",
+              "description": "Enter scorer id",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "status",
+              "in": "formData",
+              "description": "Enter status (1.upcoming)",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "team_one_json",
+              "in": "formData",
+              "description": "Enter team one json with there type (WK,BAT,BOWL,ALD)",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "team_two_json",
+              "in": "formData",
+              "description": "Enter team two json with there type (WK,BAT,BOWL,ALD)",
+              "required": true,
+              "type": "string"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
       }
     },
     "securityDefinitions": {
