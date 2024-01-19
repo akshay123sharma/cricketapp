@@ -1,9 +1,9 @@
 {
     "development": {
-      "username": "admin",
-      "password": "Akshay@123",
+      "username": "root",
+      "password": "",
       "database": "cricket_app",
-      "host": "database-cricketapp.cpy44gkqgu3o.eu-north-1.rds.amazonaws.com",
+      "host": "127.0.0.1",
       "dialect": "mysql"
     },
     "test": {
@@ -17,7 +17,7 @@
       "username": "admin",
       "password": "Akshay@123",
       "database": "cricket_app",
-      "host": "database-cricketapp.cpy44gkqgu3o.eu-north-1.rds.amazonaws.com",
+      "host": "127.0.0.1",
       "dialect": "mysql"
     }
   }
