@@ -5,7 +5,7 @@
       "version": "1.0.0",
       "title": "Cricket App"
     },
-    "host": "13.200.174.157:5000/",
+    "host": "localhost:5000/",
     "basePath": "apis",
     "tags": [
       {
@@ -405,14 +405,14 @@
             {
               "name": "match_date",
               "in": "formData",
-              "description": "Enter match date",
+              "description": "Enter match date (format : YYYY-MM-DD)",
               "required": true,
               "type": "string"
             },
             {
               "name": "match_time",
               "in": "formData",
-              "description": "Enter match time",
+              "description": "Enter match time (in 24 hour format : 20:30- >like for 08:30)",
               "required": true,
               "type": "string"
             },
@@ -457,7 +457,125 @@
             }
           }
         }
+      },
+      "/match_list": {
+        "get": {
+          "tags": ["Teams"],
+          "summary": "Get All upcoming match which come on the home screen",
+          "operationId": "match_list",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/verify_scorer": {
+        "post": {
+          "tags": ["Teams"],
+          "summary": "Verify scorer with for particular match.",
+          "operationId": "verify_scorer",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                  "name": "match_id",
+                  "in": "formData",
+                  "description": "Enter match id",
+                  "required": true,
+                  "type": "string"
+              },
+              {
+                "name": "scorer_id",
+                "in": "formData",
+                "description": "Enter scorer id",
+                "required": true,
+                "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "verify  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/toss_result": {
+        "post": {
+          "tags": ["Teams"],
+          "summary": "Add toss and there result",
+          "operationId": "toss_result",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                  "name": "match_id",
+                  "in": "formData",
+                  "description": "Enter match id",
+                  "required": true,
+                  "type": "string"
+              },
+              {
+                "name": "toss_winner_id",
+                "in": "formData",
+                "description": "Enter toss winner team  id",
+                "required": true,
+                "type": "string"
+            },
+            {
+              "name": "toss_decision",
+              "in": "formData",
+              "description": "Enter toss decision of  team send (1. Batting 2. Bowling)",
+              "required": true,
+              "type": "string"
+          }
+
+            
+          ],
+          "responses": {
+            "200": {
+              "description": "verify  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
       }
+
     },
     "securityDefinitions": {
       "APIKeyHeader": {

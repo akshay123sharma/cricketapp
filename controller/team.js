@@ -86,25 +86,29 @@ module.exports = {
               mobile_number: {
                 [sequelize.Op.like]: `%${mobile_number}%`,
               },
+              type:2
             },
         });
         if(playersArr){
             commonFunction.successMesssage(res, "Data Get Successfully", playersArr); 
         }else{
-            commonFunction.errorMesssage(res, "No data found", {}); 
+            commonFunction.errorMesssage(res, "No data found", []); 
         }
     }else{
         commonFunction.errorMesssage(res, "Enter Mobile Number", {}); 
     }
   },
 
+
+
   teamList: async (req, res) => {
     try {
         const teamsArr = await teams.findAll();
+
         if (teamsArr && teamsArr.length > 0) {
             commonFunction.successMesssage(res, "Team List Get Successfully", teamsArr);
         } else {
-            commonFunction.errorMesssage(res, "No data found", {});
+            commonFunction.errorMesssage(res, "No data found", []);
         }
     } catch (error) {
         commonFunction.errorMesssage(res, "Error While get team list", {});
@@ -144,7 +148,7 @@ teamDetail: async (req, res) => {
     if(teamArr && teamArr.length>0){
          commonFunction.successMesssage(res, "Team List Get Successfully", teamArr);
     }else{
-        commonFunction.successMesssage(res, "No data found", {});
+        commonFunction.successMesssage(res, "No data found", []);
     }
     } catch (error) {
         commonFunction.errorMesssage(res, "Internal server error", {});
@@ -163,5 +167,58 @@ createMatch:async(req,res)=>{
     }catch(error){
         commonFunction.errorMesssage(res, "Internal server error", {});
     }
+},
+
+
+MatchList:async(req,res)=>{
+    try{
+        const upcoming_match_list = await helper.getAllUpcomingMatchList();
+        if(upcoming_match_list){
+            commonFunction.successMesssage(res, "Upcoming match list get successfully",upcoming_match_list);  
+        }else{
+            commonFunction.errorMesssage(res, "Error while get upcoming match list", []);
+        }
+    }catch(error){
+        commonFunction.errorMesssage(res, "Internal server error", {});
+    }
+},
+
+
+verifyScorer:async(req,res)=>{
+     try{
+        const requestArr = req.body;
+        const check_scorer = await matches.findOne({
+            where:{
+                scorer_id:requestArr.scorer_id,
+                id:requestArr.match_id
+            }
+        });
+        if(check_scorer){
+            commonFunction.successMesssage(res, "Scorer Match",check_scorer);  
+        }else{
+            commonFunction.errorMesssage(res, "You do not have permission to score on this match.contact admin", {});
+        }
+    }catch(error){
+            commonFunction.errorMesssage(res, "Internal server error", {});
+    }
+},
+
+tossResult:async(req,res)=>{
+    try{
+        const resultArr = req.body;
+        const update_toss_result = await matches.update(resultArr, {
+            where: {
+              id: resultArr.match_id,
+            },
+        });
+        if(update_toss_result){
+            commonFunction.successMesssage(res, "Record Updated successfully", {});
+        }else{
+            commonFunction.errorMesssage(res, "Error while updating the data", {});
+        } 
+    }catch(error){
+            commonFunction.errorMesssage(res, "Internal server error ",{});
+    }
 }
+
 }

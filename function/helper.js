@@ -1,11 +1,11 @@
 const db = require("../model");
 const sequelize = require("sequelize");
+var moment = require("moment");
 const Op = sequelize.Op;
 const user = db.users;
 const teams = db.teams;
 const team_players = db.team_players;
-
-
+const match = db.matches;
 /* Create user   */
 
 const createUser = async (data) => {
@@ -83,10 +83,46 @@ const createPlayer = async(requestArr) =>{
       return true;
 }
 
+const getAllUpcomingMatchList = async () => {
+  try {
+    const current_date = moment().format('YYYY-MM-DD');
+    const current_time = moment().format('HH:mm');
+    const upcoming_match_list = await match.findAll({
+      where: {
+        match_date: {
+          [Op.gte]: current_date
+        },
+        match_time: {
+          [Op.gte]: current_time
+        },
+      },
+      raw:true,
+    });
+
+    if (upcoming_match_list) {
+      const updatedUpcomingMatches = [];
+      for (const match of upcoming_match_list) {
+        const team1 = await teams.findByPk(match.team1_id);
+        const team2 = await teams.findByPk(match.team2_id);
+        if (team1 && team2) {
+          match.team1_name = team1.name;
+          match.team2_name = team2.name;
+          updatedUpcomingMatches.push(match);
+        }
+      }
+      return updatedUpcomingMatches;
+    }
+  } catch (error) {
+    return [];
+  }
+};
+
+
 module.exports = {
   createUser,
   userByMobileNumber,
   userById,
   createTeam,
-  createPlayer
+  createPlayer,
+  getAllUpcomingMatchList,
 };

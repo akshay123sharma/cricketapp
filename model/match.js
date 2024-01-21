@@ -11,11 +11,11 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
       },
       team1_id: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       team2_id: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       total_over: {
@@ -48,7 +48,7 @@ module.exports = function (sequelize, DataTypes) {
         default:0,
         comment: "Team id",
       },
-      toss_descision: {
+      toss_decision: {
         type: DataTypes.INTEGER,
         allowNull: true,
         default:0,
