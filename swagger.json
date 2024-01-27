@@ -306,7 +306,15 @@
             }
           ],
           "consumes": ["multipart/form-data"],
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "search_parameters",
+              "in": "query",
+              "description": "Team seach  with name",
+              "required": false,
+              "type": "string"
+            }
+          ],
           "responses": {
             "200": {
               "description": "Logout  Successfully",

@@ -25,7 +25,7 @@ module.exports = {
         }
         const create_team = await helper.createTeam(requestArr);
         if(create_team) {
-            commonFunction.successMesssage(res, "Team created Successfully", {});
+            commonFunction.successMesssage(res, "Team created Successfully", create_team);
         }else {
             commonFunction.errorMesssage(res, "Team name already exits", {});
         }
@@ -103,7 +103,11 @@ module.exports = {
 
   teamList: async (req, res) => {
     try {
-        const teamsArr = await teams.findAll();
+        const teamsArr = await teams.findAll(
+            {
+                order: [['id', 'DESC']],
+            }
+        );
 
         if (teamsArr && teamsArr.length > 0) {
             commonFunction.successMesssage(res, "Team List Get Successfully", teamsArr);

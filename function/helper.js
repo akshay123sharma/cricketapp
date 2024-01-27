@@ -72,7 +72,7 @@ const createTeam = async(requestArr) =>{
     });
     if (!checkExistingTeam) {
         const new_team = await teams.create(requestArr);
-        return true;
+        return new_team;
     }else{
         return false;
     }
