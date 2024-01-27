@@ -66,6 +66,7 @@ const userById = async(data) => {
 
 /* ---------------------------------TEAMS FUNCTION --------------------------*/
 const createTeam = async(requestArr) =>{
+  // test
     const checkExistingTeam = await teams.findOne({
         where: { name: requestArr.name },
     });
