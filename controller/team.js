@@ -101,23 +101,52 @@ module.exports = {
 
 
 
-  teamList: async (req, res) => {
-    try {
-        const teamsArr = await teams.findAll(
-            {
-                order: [['id', 'DESC']],
-            }
-        );
+//   teamList: async (req, res) => {
+//     try {
 
+//         const teamsArr = await teams.findAll({
+//                 order: [['id', 'DESC']],
+//         });
+//         if (teamsArr && teamsArr.length > 0) {
+//             commonFunction.successMesssage(res, "Team List Get Successfully", teamsArr);
+//         } else {
+//             commonFunction.errorMesssage(res, "No data found", []);
+//         }
+//     } catch (error) {
+//         commonFunction.errorMesssage(res, "Error While get team list", {});
+//     }
+// },
+
+
+
+teamList: async (req, res) => {
+    try {
+        const { search_parameters } = req.query;
+        const whereClause = {};
+        if (search_parameters) {
+            whereClause.name = { [Op.like]: `%${search_parameters}%` };
+        }
+        const teamsArr = await teams.findAll({
+            where: whereClause,
+            order: [['id', 'DESC']],
+        });
         if (teamsArr && teamsArr.length > 0) {
             commonFunction.successMesssage(res, "Team List Get Successfully", teamsArr);
         } else {
             commonFunction.errorMesssage(res, "No data found", []);
         }
     } catch (error) {
-        commonFunction.errorMesssage(res, "Error While get team list", {});
+        console.error('Error:', error);
+        commonFunction.errorMesssage(res, "Error While getting team list", {});
     }
 },
+
+
+
+
+
+
+
 
 
 teamDetail: async (req, res) => {
