@@ -72,7 +72,15 @@ const createTeam = async(requestArr) =>{
     });
     if (!checkExistingTeam) {
         const new_team = await teams.create(requestArr);
-        return new_team;
+        if(new_team){
+          const teamObj = await teams.findOne({
+            where:{
+              id:new_team.id
+            }
+          })
+          return teamObj;
+        }
+       return false;
     }else{
         return false;
     }
