@@ -5,7 +5,7 @@
       "version": "1.0.0",
       "title": "Cricket App"
     },
-    "host": "13.200.174.157:5000/",
+    "host": "localhost:5000/",
     "basePath": "apis",
     "tags": [
       {
@@ -451,7 +451,14 @@
               "description": "Enter team two json with there type (WK,BAT,BOWL,ALD)",
               "required": true,
               "type": "string"
-            } 
+            },
+            {
+              "name": "player_list",
+              "in": "formData",
+              "description": "Player list array of both the team with 2 key team id and player id to add in scoreboard.",
+              "required": true,
+              "type": "string"
+            }
           ],
           "responses": {
             "200": {
@@ -582,8 +589,69 @@
             }
           }
         }
+      },
+      "/select_players": {
+        "post": {
+          "tags": ["Teams"],
+          "summary": "On start scoreboard when select stricker not stricker hit this api.",
+          "operationId": "select_players",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "type",
+              "in": "formData",
+              "description": "send 1 if add batsman and 2 if add bowler.",
+              "required": true,
+              "type": "string"
+            },
+              {
+                  "name": "match_id",
+                  "in": "formData",
+                  "description": "match_id",
+                  "required": true,
+                  "type": "string"
+              },
+              {
+                "name": "team_id",
+                "in": "formData",
+                "description": "team_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+              "name": "player_id",
+              "in": "formData",
+              "description": "player_id",
+              "required": true,
+              "type": "string"
+             },
+             {
+              "name": "position",
+              "in": "formData",
+              "description": "1 for striker , 2 for non stricker (Please make sure if type 1 then this required.)",
+              "required": false,
+              "type": "string"
+             }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
       }
-
     },
     "securityDefinitions": {
       "APIKeyHeader": {

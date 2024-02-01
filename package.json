@@ -9,6 +9,7 @@
     "mysqli": "^3.1.4",
     "path": "^0.12.7",
     "sequelize": "^6.35.1",
+    "socket.io": "^4.7.4",
     "swagger": "^0.7.5",
     "swagger-ui-express": "^5.0.0"
   }

@@ -9,6 +9,8 @@ const user = db.users;
 const teams = db.teams;
 const team_players = db.team_players;
 const matches = db.matches;
+const score_board_batting = db.score_board_batting;
+const score_board_bowling = db.score_board_bowlers;
 
 team_players.belongsTo(user, {
     foreignKey: "user_id",
@@ -123,13 +125,6 @@ teamList: async (req, res) => {
 },
 
 
-
-
-
-
-
-
-
 teamDetail: async (req, res) => {
     try {
         const team_id = req.params.team_id;
@@ -172,8 +167,12 @@ teamDetail: async (req, res) => {
 createMatch:async(req,res)=>{
     try{
         const requestArr = req.body;
-        const create_match = matches.create(requestArr);
+        const player_list = requestArr.player_list;
+        delete requestArr.player_list;
+        const create_match = await matches.create(requestArr);
         if(create_match){
+            let match_id = create_match.id;
+            await helper.addPlayerInScoreBoardTable(player_list,match_id);
             commonFunction.successMesssage(res, "Match created Successfully", {});  
         }else{
             commonFunction.errorMesssage(res, "Error while match created", {});
@@ -184,7 +183,7 @@ createMatch:async(req,res)=>{
 },
 
 
-MatchList:async(req,res)=>{
+matchList:async(req,res)=>{
     try{
         const upcoming_match_list = await helper.getAllUpcomingMatchList();
         if(upcoming_match_list){
@@ -217,6 +216,7 @@ verifyScorer:async(req,res)=>{
     }
 },
 
+
 tossResult:async(req,res)=>{
     try{
         const resultArr = req.body;
@@ -233,6 +233,38 @@ tossResult:async(req,res)=>{
     }catch(error){
             commonFunction.errorMesssage(res, "Internal server error ",{});
     }
-}
+},
 
+selectPlayers: async(req,res)=>{
+    try{
+        const requestArr = req.body;
+        if(requestArr.type == 1) {
+            let playerObj = {
+                position : requestArr.position
+            }
+            const update_position = await score_board_batting.update(playerObj, {
+                where: {
+                  match_id: requestArr.match_id,
+                  team_id: requestArr.team_id,
+                  player_id: requestArr.player_id
+                },
+            });
+            if(update_position){
+                commonFunction.successMesssage(res, "Record Updated successfully", {});
+            }else{
+                commonFunction.errorMesssage(res, "Error while updating the data", {});
+            } 
+        }else{
+            delete requestArr.type; 
+            const add_bowler = await score_board_bowling.create(requestArr); 
+            if(add_bowler){
+                commonFunction.successMesssage(res, "Record added successfully", {});
+            }else{
+                commonFunction.errorMesssage(res, "Error while updating the data", {});
+            } 
+        } 
+    }catch(error){
+            commonFunction.errorMesssage(res, "Internal server error ",{});
+    }
+}
 }

@@ -6,6 +6,8 @@ const user = db.users;
 const teams = db.teams;
 const team_players = db.team_players;
 const match = db.matches;
+const score_board_batting = db.score_board_batting;
+
 /* Create user   */
 
 const createUser = async (data) => {
@@ -127,6 +129,20 @@ const getAllUpcomingMatchList = async () => {
 };
 
 
+// when create match then when match create then it add the player in the scoreboard
+const addPlayerInScoreBoardTable = async (player_list,match_id) => {
+  player_list = JSON.parse(player_list);
+  for (const playerData of player_list) {
+    let object = {
+        match_id : match_id,
+        team_id:playerData.team_id,
+        player_id:playerData.player_id
+    }
+    await score_board_batting.create(object);
+  }
+  return true;
+}
+
 module.exports = {
   createUser,
   userByMobileNumber,
@@ -134,4 +150,5 @@ module.exports = {
   createTeam,
   createPlayer,
   getAllUpcomingMatchList,
+  addPlayerInScoreBoardTable
 };
