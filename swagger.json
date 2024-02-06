@@ -637,6 +637,13 @@
               "description": "1 for striker , 2 for non stricker (Please make sure if type 1 then this required.)",
               "required": false,
               "type": "string"
+             },
+             {
+              "name": "is_stricker",
+              "in": "formData",
+              "description": "1 for striker , 2 for non stricker (Please make sure if type 1 then this required.)",
+              "required": false,
+              "type": "string"
              }
           ],
           "responses": {

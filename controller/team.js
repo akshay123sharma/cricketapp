@@ -240,13 +240,14 @@ selectPlayers: async(req,res)=>{
         const requestArr = req.body;
         if(requestArr.type == 1) {
             let playerObj = {
-                position : requestArr.position
+                position : requestArr.position,
+                is_stricker: requestArr.is_stricker
             }
             const update_position = await score_board_batting.update(playerObj, {
                 where: {
                   match_id: requestArr.match_id,
                   team_id: requestArr.team_id,
-                  player_id: requestArr.player_id
+                  player_id: requestArr.player_id,
                 },
             });
             if(update_position){

@@ -24,10 +24,11 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: true,
         defaultValue: 0,
       },
-      overs: {
+      balls: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0,
+        comment:"From balls get the total over"
       },
       mainders_over: {
         type: DataTypes.INTEGER,
