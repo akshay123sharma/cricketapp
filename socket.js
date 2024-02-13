@@ -1,6 +1,8 @@
 var socketfunction = require("./function/socket_function");
 module.exports = function (io) {
     io.on('connection', function(socket) {
+        console.log("connected,===============");
+        console.log("socket_id",socket.id)
         if(socket.id){
                 //================ Get the Player and bowler name when start scoring. =============//
             socket.on("create_connection", async function (data) {            
