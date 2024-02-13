@@ -7,6 +7,7 @@ const teams = db.teams;
 const team_players = db.team_players;
 const match = db.matches;
 const score_board_batting = db.score_board_batting;
+const score_board_bowling = db.score_board_bowlers;
 
 /* Create user   */
 
@@ -141,6 +142,17 @@ const addPlayerInScoreBoardTable = async (player_list,match_id) => {
     await score_board_batting.create(object);
   }
   return true;
+};
+
+const checkBowlerEntry = async(dataArr)=>{
+    const checkbowler = await score_board_bowling.findOne({
+      where: {
+        match_id: dataArr.match_id,
+        team_id:dataArr.team_id,
+        player_id:dataArr.player_id
+      },
+    });
+   return checkbowler;
 }
 
 module.exports = {
@@ -150,5 +162,6 @@ module.exports = {
   createTeam,
   createPlayer,
   getAllUpcomingMatchList,
-  addPlayerInScoreBoardTable
+  addPlayerInScoreBoardTable,
+  checkBowlerEntry,
 };

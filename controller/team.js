@@ -267,5 +267,69 @@ selectPlayers: async(req,res)=>{
     }catch(error){
             commonFunction.errorMesssage(res, "Internal server error ",{});
     }
+},
+
+nextBowler: async(req,res)=>{
+     try{
+        const requestArr = req.body;
+        const checkBowlerEntry = await helper.checkBowlerEntry(requestArr);
+        if(checkBowlerEntry){
+            commonFunction.successMesssage(res, "Record Updated successfully", checkBowlerEntry);  
+        }else{
+            let scoreobj = {
+                match_id:requestArr.match_id,
+                team_id:requestArr.team_id,
+                player_id:requestArr.player_id
+            };
+            const add_bolwer = await score_board_bowling.create(scoreobj);
+            const check_bowler = await helper.checkBowlerEntry(requestArr);
+            commonFunction.successMesssage(res, "Record Updated successfully", check_bowler);
+        }    
+    }catch(error){
+            commonFunction.errorMesssage(res, "Internal server error ",{});
+    }
+},
+
+changeStricker: async (req, res) => {
+    const resultArr = req.body;
+    const resetStrikerObj = {
+        is_stricker: 0
+    };
+    const resetStrikerResult = await score_board_batting.update(resetStrikerObj, {
+        where: {
+            match_id: resultArr.match_id,
+            team_id: resultArr.team_id,
+        },
+    });
+    if (resetStrikerResult) {
+        const updateStrikerObj = {
+            is_stricker: 1
+        };
+        const updateStrikerResult = await score_board_batting.update(updateStrikerObj, {
+            where: {
+                match_id: resultArr.match_id,
+                team_id: resultArr.team_id,
+                player_id: resultArr.player_id,
+            },
+        });
+
+        // get the latest data
+        let player_data = await score_board_batting.findOne({
+            where: {
+                match_id: resultArr.match_id,
+                team_id: resultArr.team_id,
+                player_id: resultArr.player_id,
+            },
+        })
+        if (updateStrikerResult) {
+            commonFunction.successMesssage(res, "Updated successfully", player_data);
+        } else {
+            commonFunction.errorMesssage(res, "Error while updating the data", {});
+        }
+    } else {
+        commonFunction.errorMesssage(res, "Error while updating the data", {});
+    }
 }
+
+
 }

@@ -7,6 +7,8 @@ const user = db.users;
 const score_board_batting = db.score_board_batting;
 const score_board_bowling = db.score_board_bowlers;
 const match = db.match;
+const extras = db.extras;
+
 module.exports = {
   stikerDetail: async  (data) => {
         try {
@@ -97,6 +99,39 @@ module.exports = {
     const overs = Math.floor(balls / 6);
     const remaining_balls = balls % 6;
     return overs + remaining_balls / 10;
-  }
+  },
+
+
+  updateExtras:async(dataArr) =>{
+        const create_extras= await extras.create(dataArr);
+        return create_extras;
+  },
+
+  totalScore : async(data) => {
+    try {
+        const [total_runs, total_extras] = await Promise.all([
+            score_board_batting.sum('run', {
+                where: { team_id: data.team_id, match_id: data.match_id }
+            }),
+            extras.sum('count', {
+                where: { team_id: data.team_id, match_id: data.match_id }
+            })
+        ]);
+        const total_run_count = total_runs || 0;
+        const total_extra_count = total_extras || 0;
+        return total_run_count + total_extra_count;
+    } catch (error) {
+        throw new Error("Error calculating total score: " + error.message);
+    }
+},
+
+totalOver:async(data)=>{
+    let total_overs = score_board_bowling.sum('balls', {
+        where: { team_id: data.team_id, match_id: data.match_id }
+    });
+    const total_overs_count = total_overs || 0;
+    return total_overs_count;
+}
+
       
 };
