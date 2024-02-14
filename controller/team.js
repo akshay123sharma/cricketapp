@@ -329,6 +329,10 @@ changeStricker: async (req, res) => {
     } else {
         commonFunction.errorMesssage(res, "Error while updating the data", {});
     }
+},
+
+outPlayer: async(req,res) => {
+    
 }
 
 
