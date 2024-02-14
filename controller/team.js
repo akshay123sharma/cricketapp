@@ -291,49 +291,88 @@ nextBowler: async(req,res)=>{
 },
 
 changeStricker: async (req, res) => {
-    const resultArr = req.body;
-    const resetStrikerObj = {
-        is_stricker: 0
-    };
-    const resetStrikerResult = await score_board_batting.update(resetStrikerObj, {
-        where: {
-            match_id: resultArr.match_id,
-            team_id: resultArr.team_id,
-        },
-    });
-    if (resetStrikerResult) {
-        const updateStrikerObj = {
-            is_stricker: 1
-        };
-        const updateStrikerResult = await score_board_batting.update(updateStrikerObj, {
-            where: {
-                match_id: resultArr.match_id,
-                team_id: resultArr.team_id,
-                player_id: resultArr.player_id,
-            },
-        });
+    try{
+            const resultArr = req.body;
+            const resetStrikerObj = {
+                is_stricker: 0
+            };
+            const resetStrikerResult = await score_board_batting.update(resetStrikerObj, {
+                where: {
+                    match_id: resultArr.match_id,
+                    team_id: resultArr.team_id,
+                },
+            });
+            if (resetStrikerResult) {
+                const updateStrikerObj = {
+                    is_stricker: 1
+                };
+                const updateStrikerResult = await score_board_batting.update(updateStrikerObj, {
+                    where: {
+                        match_id: resultArr.match_id,
+                        team_id: resultArr.team_id,
+                        player_id: resultArr.player_id,
+                    },
+                });
 
-        // get the latest data
-        let player_data = await score_board_batting.findOne({
-            where: {
-                match_id: resultArr.match_id,
-                team_id: resultArr.team_id,
-                player_id: resultArr.player_id,
-            },
-        })
-        if (updateStrikerResult) {
-            commonFunction.successMesssage(res, "Updated successfully", player_data);
-        } else {
-            commonFunction.errorMesssage(res, "Error while updating the data", {});
+                // get the latest data
+                let player_data = await score_board_batting.findOne({
+                    where: {
+                        match_id: resultArr.match_id,
+                        team_id: resultArr.team_id,
+                        player_id: resultArr.player_id,
+                    },
+                })
+                if (updateStrikerResult) {
+                    commonFunction.successMesssage(res, "Updated successfully", player_data);
+                } else {
+                    commonFunction.errorMesssage(res, "Error while updating the data", {});
+                }
+            } else {
+                commonFunction.errorMesssage(res, "Error while updating the data", {});
+            }
+
+        } catch (error) {
+            commonFunction.successMesssage(res, "Internal server errro", {});    
         }
-    } else {
-        commonFunction.errorMesssage(res, "Error while updating the data", {});
-    }
 },
 
+
 outPlayer: async(req,res) => {
-    
-}
-
-
+    try{
+            const requestArr = req.body;
+            const updateScorer = {
+                dismissal_type: requestArr.dismissal_type,
+                bowler_id : requestArr.bowler_id,
+                fielder_id: requestArr.fielder_id,
+                is_stricker: 0
+            };
+            const updateOutDetail = await score_board_batting.update(updateScorer, {
+                where: {
+                    match_id: requestArr.match_id,
+                    team_id: requestArr.team_id,
+                    player_id: resultArr.player_id,
+                },
+            });
+            if(updateOutDetail){
+                const checkBowlerEntry = await helper.checkBowlerEntry(requestArr);
+                const updateBowler = {
+                    wicket: checkBowlerEntry.wicket + 1,
+                };
+                const updateOutDetail = await score_board_bowling.update(updateBowler, {
+                    where: {
+                        match_id: requestArr.match_id,
+                        team_id: requestArr.team_id,
+                        player_id: requestArr.bowler_id,
+                    },
+                });
+                if (updateOutDetail) {
+                    commonFunction.successMesssage(res, "Updated successfully", player_data);
+                } else {
+                    commonFunction.errorMesssage(res, "Error while updating the data", {});
+                }
+            }
+        } catch (error) {
+            commonFunction.successMesssage(res, "Internal server errro", {});    
+        }
+    },
 }
