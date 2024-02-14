@@ -9,7 +9,7 @@
     "basePath": "apis",
     "tags": [
       {
-        "name": "login",
+        "name": "login ",
         "description": "Login  Operations"
       },
       {
