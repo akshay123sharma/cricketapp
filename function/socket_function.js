@@ -64,16 +64,6 @@ module.exports = {
           runs: bowlerDetail.runs + data.run,
           economy: ((bowlerDetail.runs + data.run) / (bowlerDetail.balls + 1)) * 6,
       };
-      
-    
-
-        console.log(bowlerDetail.runs + data.run,"111");
-        console.log(bowlerDetail.balls + 1,"1112");
-        console.log(((bowlerDetail.runs + data.run) /  bowlerDetail.balls + 1) * 6,"==");
-        
-
-
-
         // Condition object for updating records
         const conditionObj = {
             match_id: data.match_id,

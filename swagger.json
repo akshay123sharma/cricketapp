@@ -5,7 +5,7 @@
       "version": "1.0.0",
       "title": "Cricket App"
     },
-    "host": "3.108.254.219:5000/",
+    "host": "localhost:5000/",
     "basePath": "apis",
     "tags": [
       {
@@ -738,6 +738,82 @@
               "name": "player_id",
               "in": "formData",
               "description": "player_id",
+              "required": true,
+              "type": "string"
+             }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/out_player": {
+        "post": {
+          "tags": ["Teams"],
+          "summary": "When out player on socket.",
+          "operationId": "change_stricker",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                "name": "match_id",
+                "in": "formData",
+                "description": "match_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "team_id",
+                "in": "formData",
+                "description": "team_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+              "name": "player_id",
+              "in": "formData",
+              "description": "player_id",
+              "required": true,
+              "type": "string"
+             },
+             {
+              "name": "dismissal_type",
+              "in": "formData",
+              "description": "dismissal_type",
+              "required": true,
+              "type": "string"
+             },
+             {
+              "name": "fielder_id",
+              "in": "formData",
+              "description": "fielder_id",
+              "required": true,
+              "type": "string"
+             },
+             {
+              "name": "bowler_id",
+              "in": "formData",
+              "description": "bowler_id",
+              "required": true,
+              "type": "string"
+             },
+             {
+              "name": "team2_id",
+              "in": "formData",
+              "description": "team2_id",
               "required": true,
               "type": "string"
              }

@@ -16,6 +16,10 @@ team_players.belongsTo(user, {
     foreignKey: "user_id",
 });
 
+score_board_batting.belongsTo(user, {
+    foreignKey: "player_id",
+});
+
 module.exports = {
   /* -----  Create Teams ----- */
   createTeam: async (req, res) => {
@@ -350,7 +354,7 @@ outPlayer: async(req,res) => {
                 where: {
                     match_id: requestArr.match_id,
                     team_id: requestArr.team_id,
-                    player_id: resultArr.player_id,
+                    player_id: requestArr.player_id,
                 },
             });
             if(updateOutDetail){
@@ -361,12 +365,12 @@ outPlayer: async(req,res) => {
                 const updateOutDetail = await score_board_bowling.update(updateBowler, {
                     where: {
                         match_id: requestArr.match_id,
-                        team_id: requestArr.team_id,
+                        team_id: requestArr.team2_id,
                         player_id: requestArr.bowler_id,
                     },
                 });
                 if (updateOutDetail) {
-                    commonFunction.successMesssage(res, "Updated successfully", player_data);
+                    commonFunction.successMesssage(res, "Updated successfully", {});
                 } else {
                     commonFunction.errorMesssage(res, "Error while updating the data", {});
                 }
@@ -375,4 +379,27 @@ outPlayer: async(req,res) => {
             commonFunction.successMesssage(res, "Internal server errro", {});    
         }
     },
+
+    scoreBoard: async(req,res) => {
+        const requestArr = req.query;
+        const  scoreBoardBattingArr= await score_board_batting.findAll({
+            include: [
+                {
+                    model: user,
+                    attributes: [
+                        "name",
+                    ],
+                    required: false,
+                },
+            ],
+            where:{
+                team_id: requestArr.team_id,
+                match_id:requestArr.match_id
+            },
+            raw:false,
+            nest:false
+        });
+
+        commonFunction.successMesssage(res, "Internal server errro", scoreBoardBattingArr);
+    }
 }
