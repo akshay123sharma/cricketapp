@@ -8,7 +8,8 @@ const team_players = db.team_players;
 const match = db.matches;
 const score_board_batting = db.score_board_batting;
 const score_board_bowling = db.score_board_bowlers;
-
+const extras = db.extras;
+var socketfunction = require("./socket_common");
 /* Create user   */
 
 const createUser = async (data) => {
@@ -153,7 +154,101 @@ const checkBowlerEntry = async(dataArr)=>{
       },
     });
    return checkbowler;
+},
+
+scoreBoardBatting = async(dataArr) => {
+  const scoreBoardBattingArr = await score_board_batting.findAll({
+          attributes: [
+              'id',
+              'match_id',
+              'team_id',
+              'player_id',
+              'position',
+              'run',
+              'balls',
+              'fours',
+              'sixs',
+              'is_stricker',
+              'is_caption',
+              'strike_rate',
+              'dismissal_type',
+              'bowler_id',
+              'fielder_id',
+              'createdAt',
+              'updatedAt',
+              [
+                  sequelize.literal(
+                    "(select name from users where id =`score_board_batting`.`player_id` order by id desc  LIMIT 1)"
+                  ),
+                  "player_name",
+              ],
+              [
+                  sequelize.literal(
+                    "(select name from users where id =`score_board_batting`.`bowler_id` order by id desc  LIMIT 1)"
+                  ),
+                  "bowler_name",
+              ],
+              [
+                  sequelize.literal(
+                    "(select name from users where id =`score_board_batting`.`fielder_id` order by id desc  LIMIT 1)"
+                  ),
+                  "filder_name",
+                ],
+          ],
+          where: {
+              team_id: dataArr.team_id,
+              match_id: dataArr.match_id
+          },
+          raw: true
+      });
+
+      return scoreBoardBattingArr;
+},
+
+scoreBoardBowler = async(dataArr)=>{
+  const scoreBoardBowlingArr = await score_board_bowling.findAll({
+    attributes: [
+        'id',
+        'match_id',
+        'team_id',
+        'player_id',
+        'runs',
+        'wicket',
+        'economy',
+        'balls',
+        'createdAt',
+        'updatedAt',
+        [
+            sequelize.literal(
+              "(select name from users where id =`score_board_bowlers`.`player_id` order by id desc  LIMIT 1)"
+            ),
+            "bowler_name",
+        ],
+    ],
+    where: {
+        team_id: dataArr.team_id,
+        match_id: dataArr.match_id
+    },
+    raw: true
+  });
+return scoreBoardBowlingArr;
+},
+
+extrasRun = async(dataArr) => {
+    const counts = await extras.findAll({
+        attributes: ['type', [sequelize.fn('COUNT', sequelize.col('type')), 'count']],
+          where: {
+            type: {
+              [Op.in]: [8, 9, 10, 11],
+            },
+          team_id: dataArr.team_id,
+          match_id: dataArr.match_id
+      },
+          group: ['type']
+    });
+    return counts;
 }
+
 
 module.exports = {
   createUser,
@@ -164,4 +259,7 @@ module.exports = {
   getAllUpcomingMatchList,
   addPlayerInScoreBoardTable,
   checkBowlerEntry,
+  scoreBoardBatting,
+  scoreBoardBowler,
+  extrasRun
 };

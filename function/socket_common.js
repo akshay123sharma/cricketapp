@@ -68,9 +68,9 @@ module.exports = {
       conditionObj.player_id = player1_id;
       const updateBatsman = await score_board_batting.update(batsmanObj, { where: conditionObj });
         if (updateBatsman && [1, 3, 5, 7].includes(clickType)) {
-        await score_board_batting.update({ is_stricker: 0 }, { where: conditionObj });
-        conditionObj.player_id = player2_id;
-        await score_board_batting.update({ is_stricker: 1 }, { where: conditionObj });
+          await score_board_batting.update({ is_stricker: 0 }, { where: conditionObj });
+          conditionObj.player_id = player2_id;
+          await score_board_batting.update({ is_stricker: 1 }, { where: conditionObj });
       }
       return updateBatsman;
     } catch (error) {

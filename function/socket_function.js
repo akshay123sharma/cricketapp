@@ -64,15 +64,20 @@ module.exports = {
           runs: bowlerDetail.runs + data.run,
           economy: ((bowlerDetail.runs + data.run) / (bowlerDetail.balls + 1)) * 6,
       };
-        // Condition object for updating records
-        const conditionObj = {
+        // Condition object for updating batsman
+        const conditionBatsmanObj = {
             match_id: data.match_id,
             team_id: data.team_id,
         };
+
+        const conditionBolwerObj = {
+          match_id: data.match_id,
+          team_id: data.team2_id,
+      };
     
         // Update batsman score if it's not an extra event
         if (!isExtra) {
-            await socketfunction.updateBatsmanScore(batsmanObj, conditionObj, data.player1_id, data.player2_id);
+            await socketfunction.updateBatsmanScore(batsmanObj, conditionBatsmanObj, data.player1_id, data.player2_id);
         } else { // If it's an extra, update extras table
             const extraObj = {
                 match_id: data.match_id,
@@ -84,7 +89,7 @@ module.exports = {
         }
     
         // Update bowler score
-        await socketfunction.updateBowlerScore(bowlerObj, conditionObj, data.bowler_id);
+        await socketfunction.updateBowlerScore(bowlerObj, conditionBolwerObj, data.bowler_id);
     
         // Fetch striker details
         const strikerDetail = await socketfunction.stikerDetail(data);
