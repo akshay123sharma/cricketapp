@@ -47,6 +47,8 @@ module.exports = {
     
         // Check if the current event is an extra
         const isExtra = [8, 9, 10, 11].includes(data.type);
+        // Calculate the fantasy point of batsman.
+        const fantasy_points = await socketfunction.calculateFantasyPoints(playerDetail, data, isExtra);
     
         // Calculate batsman object
         const batsmanObj = {
@@ -56,24 +58,23 @@ module.exports = {
             fours: data.type === 4 ? playerDetail.fours + 1 : playerDetail.fours,
             sixs: data.type === 6 ? playerDetail.sixs + 1 : playerDetail.sixs,
             strike_rate: ((playerDetail.run + (isExtra ? 0 : data.run)) / (playerDetail.balls + 1)) * 100,
+            // fantasy_points: fantasy_points
         };
-    
         // Calculate bowler object
         const bowlerObj = {
           balls: isExtra ? bowlerDetail.balls : bowlerDetail.balls + 1,
           runs: bowlerDetail.runs + data.run,
           economy: ((bowlerDetail.runs + data.run) / (bowlerDetail.balls + 1)) * 6,
-      };
+        };
         // Condition object for updating batsman
         const conditionBatsmanObj = {
             match_id: data.match_id,
             team_id: data.team_id,
         };
-
         const conditionBolwerObj = {
           match_id: data.match_id,
           team_id: data.team2_id,
-      };
+        };
     
         // Update batsman score if it's not an extra event
         if (!isExtra) {
@@ -116,10 +117,12 @@ module.exports = {
             },
             scores: {
               total_run: total_scrore,
-              total_over:total_over
+              total_over:await socketfunction.formatOver(total_over),
           },
         };
         return response;
     },
     
+  
+
 };

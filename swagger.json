@@ -792,7 +792,7 @@
              {
               "name": "dismissal_type",
               "in": "formData",
-              "description": "dismissal_type",
+              "description": "dismissal_type [6 for run out and 8 for retired hut else manage on your end. Show on scoreboard according to that ]",
               "required": true,
               "type": "string"
              },

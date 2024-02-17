@@ -1,23 +1,24 @@
-   {
-      "development": {
-        "username": "admin",
+{
+    "development": {
+      "username": "admin",
         "password": "Akshay#99",
         "database": "cricket_app",
         "host": "database-1.cxw6eu8msdla.ap-south-1.rds.amazonaws.com",
-        "dialect": "mysql"
-      },
-      "test": {
-        "username": "admin",
+      "dialect": "mysql"
+    },
+    "test": {
+      "username": "admin",
+      "password": "Akshay#99",
+      "database": "cricket_app",
+      "host": "database-1.cxw6eu8msdla.ap-south-1.rds.amazonaws.com",
+      "dialect": "mysql"
+    },
+    "production": {
+      "username": "admin",
         "password": "Akshay#99",
         "database": "cricket_app",
         "host": "database-1.cxw6eu8msdla.ap-south-1.rds.amazonaws.com",
-        "dialect": "mysql"
-      },
-      "production": {
-        "username": "admin",
-        "password": "Akshay#99",
-        "database": "cricket_app",
-        "host": "database-1.cxw6eu8msdla.ap-south-1.rds.amazonaws.com",
-        "dialect": "mysql"
-      }
+      "dialect": "mysql"
     }
+  }
+  

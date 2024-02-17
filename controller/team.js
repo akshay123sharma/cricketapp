@@ -340,18 +340,21 @@ outPlayer: async(req,res) => {
                 const updateBowler = {
                     wicket: checkBowlerEntry.wicket + 1,
                 };
-                const updateOutDetail = await score_board_bowling.update(updateBowler, {
-                    where: {
-                        match_id: requestArr.match_id,
-                        team_id: requestArr.team2_id,
-                        player_id: requestArr.bowler_id,
-                    },
-                });
-                if (updateOutDetail) {
-                    commonFunction.successMesssage(res, "Updated successfully", {});
-                } else {
-                    commonFunction.errorMesssage(res, "Error while updating the data", {});
+                if(requestArr.dismissal_type != 6 && requestArr.dismissal_type !=8){
+                    const updateOutDetail = await score_board_bowling.update(updateBowler, {
+                        where: {
+                            match_id: requestArr.match_id,
+                            team_id: requestArr.team2_id,
+                            player_id: requestArr.bowler_id,
+                        },
+                    });
+                    if (updateOutDetail) {
+                        commonFunction.successMesssage(res, "Updated successfully", {});
+                    } else {
+                        commonFunction.errorMesssage(res, "Error while updating the data", {});
+                    }
                 }
+                commonFunction.successMesssage(res, "Updated successfully", {});
             }
         } catch (error) {
             commonFunction.successMesssage(res, "Internal server errro", {});    

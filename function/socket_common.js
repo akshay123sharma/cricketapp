@@ -49,7 +49,7 @@ module.exports = {
       let _bolwer_detail = await score_board_bowling.findOne({
         where:{
           player_id:data.bowler_id,
-          team_id:data.team_id,
+          team_id:data.team2_id,
           match_id:data.match_id
         },
         raw:true,
@@ -84,9 +84,9 @@ module.exports = {
   updateBowlerScore: async(bowlerObj, conditionObj,bowler_id) => {
     try {
         conditionObj.player_id = bowler_id;
-      const update_bowler = await score_board_bowling.update(bowlerObj, {
-        where: conditionObj,
-      });
+        const update_bowler = await score_board_bowling.update(bowlerObj, {
+             where: conditionObj,
+        });
       return update_bowler;
     } catch (error) {
       console.error("Error updating batsman score:", error);
@@ -127,10 +127,52 @@ module.exports = {
 
 totalOver:async(data)=>{
     let total_overs = score_board_bowling.sum('balls', {
-        where: { team_id: data.team_id, match_id: data.match_id }
+        where: { team_id: data.team2_id, match_id: data.match_id }
     });
     const total_overs_count = total_overs || 0;
     return total_overs_count;
+},
+
+
+calculateFantasyPoints: async(playerDetail, data, isExtra) => {
+  let milestoneFlags = {
+    milestone30: false,
+    milestone50: false,
+    milestone130: false,
+    milestone150: false,
+    milestone170: false
+};
+  let fantasy_points = playerDetail.fantasy_points;
+  fantasy_points += (isExtra ? 0 : data.run);
+  if (data.type === 4) {
+      fantasy_points += 1;
+  } else if (data.type === 6) {
+      fantasy_points += 2;
+  }
+
+  // Points for milestones
+  if (playerDetail.run >= 30 && !milestoneFlags.milestone30) {
+    milestoneFlags.milestone30 = true; // Set the flag to true to mark the milestone achieved
+      fantasy_points += 4;
+  } else if (playerDetail.run >= 50 && !milestoneFlags.milestone50) {
+    milestoneFlags.milestone50 = true; // Set the flag to true to mark the milestone achieved
+      fantasy_points += 16;
+  }
+
+  // Points for strike rate milestones (added only once)
+  const strikeRate = ((playerDetail.run + (isExtra ? 0 : data.run)) / (playerDetail.balls + 1)) * 100;
+  if (strikeRate > 130 && strikeRate <= 150 && !milestoneFlags.milestone130) {
+    milestoneFlags.milestone130 = true;
+      fantasy_points += 2; // Strike rate over 130
+  } else if (strikeRate > 150 && strikeRate <= 170 && !milestoneFlags.milestone150) {
+    milestoneFlags.milestone150 = true;
+      fantasy_points += 4; // Strike rate over 150
+  } else if (strikeRate > 170 && !milestoneFlags.milestone170) {
+    milestoneFlags.milestone170 = true;
+      fantasy_points += 6; // Strike rate over 170
+  }
+
+  return fantasy_points;
 }
 
       
