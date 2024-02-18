@@ -90,7 +90,6 @@ const createTeam = async(requestArr) =>{
     }
 }
 
-
 const createPlayer = async(requestArr) =>{
       const create_player = await team_players.create(requestArr);
       return true;
@@ -111,7 +110,6 @@ const getAllUpcomingMatchList = async () => {
       },
       raw:true,
     });
-
     if (upcoming_match_list) {
       const updatedUpcomingMatches = [];
       for (const match of upcoming_match_list) {
@@ -129,7 +127,6 @@ const getAllUpcomingMatchList = async () => {
     return [];
   }
 };
-
 
 // when create match then when match create then it add the player in the scoreboard
 const addPlayerInScoreBoardTable = async (player_list,match_id) => {
@@ -154,9 +151,9 @@ const checkBowlerEntry = async(dataArr)=>{
       },
     });
    return checkbowler;
-},
+};
 
-scoreBoardBatting = async(dataArr) => {
+const scoreBoardBatting = async(dataArr) => {
   const scoreBoardBattingArr = await score_board_batting.findAll({
           attributes: [
               'id',
@@ -203,9 +200,9 @@ scoreBoardBatting = async(dataArr) => {
       });
 
       return scoreBoardBattingArr;
-},
+};
 
-scoreBoardBowler = async(dataArr)=>{
+const scoreBoardBowler = async(dataArr)=>{
   const scoreBoardBowlingArr = await score_board_bowling.findAll({
     attributes: [
         'id',
@@ -232,9 +229,9 @@ scoreBoardBowler = async(dataArr)=>{
     raw: true
   });
 return scoreBoardBowlingArr;
-},
+};
 
-extrasRun = async(dataArr) => {
+const extrasRun = async(dataArr) => {
     const counts = await extras.findAll({
         attributes: ['type', [sequelize.fn('COUNT', sequelize.col('type')), 'count']],
           where: {
@@ -247,8 +244,18 @@ extrasRun = async(dataArr) => {
           group: ['type']
     });
     return counts;
-}
+};
 
+const bowlerDetail = async(requestArr)=>{
+  const check_bowler = await score_board_bowling.findOne({
+    where:{
+        match_id: requestArr.match_id,
+        team_id: requestArr.team_id,
+        player_id: requestArr.player_id,
+    }
+}) 
+return check_bowler;
+};
 
 module.exports = {
   createUser,
@@ -261,5 +268,6 @@ module.exports = {
   checkBowlerEntry,
   scoreBoardBatting,
   scoreBoardBowler,
-  extrasRun
+  extrasRun,
+  bowlerDetail
 };

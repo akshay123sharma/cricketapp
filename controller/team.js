@@ -22,7 +22,7 @@ score_board_batting.belongsTo(user, {
 
 module.exports = {
   /* -----  Create Teams ----- */
-  createTeam: async (req, res) => {
+createTeam: async (req, res) => {
     try {
         const requestArr = req.body;
         if (req.files && req.files.team_photo) {
@@ -38,9 +38,9 @@ module.exports = {
     } catch (error) {
         commonFunction.successMesssage(res, "Error while created team", {});    
     }
-  },
+},
 
-  createPlayer: async (req, res) => {
+createPlayer: async (req, res) => {
      try {
         const requestArr = req.body;
         const userObj = {
@@ -60,9 +60,9 @@ module.exports = {
     } catch (error) {
         commonFunction.successMesssage(res, "Error while Player created", {}); 
     }
-  },
+},
 
-  playerSearch:async(req,res) => {
+playerSearch:async(req,res) => {
     const mobile_number = req.query.mobile_number;
     if(mobile_number){
         const playersArr = await user.findAll({
@@ -82,8 +82,7 @@ module.exports = {
     }else{
         commonFunction.errorMesssage(res, "Enter Mobile Number", {}); 
     }
-  },
-
+},
 
 teamList: async (req, res) => {
     try {
@@ -106,7 +105,6 @@ teamList: async (req, res) => {
         commonFunction.errorMesssage(res, "Error While getting team list", {});
     }
 },
-
 
 teamDetail: async (req, res) => {
     try {
@@ -164,7 +162,6 @@ createMatch:async(req,res)=>{
     }
 },
 
-
 matchList:async(req,res)=>{
     try{
         const upcoming_match_list = await helper.getAllUpcomingMatchList();
@@ -177,7 +174,6 @@ matchList:async(req,res)=>{
         commonFunction.errorMesssage(res, "Internal server error", {});
     }
 },
-
 
 verifyScorer:async(req,res)=>{
      try{
@@ -197,7 +193,6 @@ verifyScorer:async(req,res)=>{
             commonFunction.errorMesssage(res, "Internal server error", {});
     }
 },
-
 
 tossResult:async(req,res)=>{
     try{
@@ -221,6 +216,16 @@ selectPlayers: async(req,res)=>{
     try{
         const requestArr = req.body;
         if(requestArr.type == 1) {
+            const resetStrikerObj = {
+                is_stricker: 0
+            };
+            await score_board_batting.update(resetStrikerObj, {
+                where: {
+                    match_id: resultArr.match_id,
+                    team_id: resultArr.team_id,
+                },
+            });
+            
             let playerObj = {
                 position : requestArr.position,
                 is_stricker: requestArr.is_stricker
@@ -232,18 +237,24 @@ selectPlayers: async(req,res)=>{
                   player_id: requestArr.player_id,
                 },
             });
+
             if(update_position){
                 commonFunction.successMesssage(res, "Record Updated successfully", {});
             }else{
                 commonFunction.errorMesssage(res, "Error while updating the data", {});
             } 
         }else{
-            delete requestArr.type; 
-            const add_bowler = await score_board_bowling.create(requestArr); 
-            if(add_bowler){
+            delete requestArr.type;
+            const check_bowler = await helper.bowlerDetail(requestArr);
+            if(check_bowler){
                 commonFunction.successMesssage(res, "Record added successfully", {});
             }else{
-                commonFunction.errorMesssage(res, "Error while updating the data", {});
+                const add_bowler = await score_board_bowling.create(requestArr); 
+                if(add_bowler){
+                    commonFunction.successMesssage(res, "Record added successfully", {});
+                }else{
+                    commonFunction.errorMesssage(res, "Error while updating the data", {});
+                } 
             } 
         } 
     }catch(error){
@@ -318,16 +329,17 @@ changeStricker: async (req, res) => {
         }
 },
 
-
 outPlayer: async(req,res) => {
     try{
             const requestArr = req.body;
+
             const updateScorer = {
                 dismissal_type: requestArr.dismissal_type,
                 bowler_id : requestArr.bowler_id,
                 fielder_id: requestArr.fielder_id,
                 is_stricker: 0
             };
+
             const updateOutDetail = await score_board_batting.update(updateScorer, {
                 where: {
                     match_id: requestArr.match_id,
@@ -335,6 +347,7 @@ outPlayer: async(req,res) => {
                     player_id: requestArr.player_id,
                 },
             });
+
             if(updateOutDetail){
                 const checkBowlerEntry = await helper.checkBowlerEntry(requestArr);
                 const updateBowler = {
@@ -355,26 +368,33 @@ outPlayer: async(req,res) => {
                     }
                 }
                 commonFunction.successMesssage(res, "Updated successfully", {});
-            }
+            } 
         } catch (error) {
-            commonFunction.successMesssage(res, "Internal server errro", {});    
+            commonFunction.successMesssage(res, "Internal server error", {});    
         }
-    },
+},
 
-    scoreBoard: async (req, res) => {
-        try{
-            const requestArr = req.query;
-            const returnArr = {};
-            returnArr['scoreBoardBatting'] = await helper.scoreBoardBatting(requestArr);
-            returnArr['scoreBoardBowler'] = await helper.scoreBoardBowler(requestArr);
-            returnArr['extraruns'] = await helper.extrasRun(requestArr);
-            if(returnArr['scoreBoardBatting'].length > 0 && returnArr['scoreBoardBowler'].length > 0 ){
-                commonFunction.successMesssage(res, "Score board get successfully", returnArr);
-            }else{
-                commonFunction.errorMesssage(res, "No data found", []); 
-            }
-        } catch (error) {
-            commonFunction.successMesssage(res, "Internal server errro", []);    
+scoreBoard: async (req, res) => {
+ try{
+        const requestArr = req.query;
+        const returnArr = {};
+        returnArr['scoreBoardBatting'] = await helper.scoreBoardBatting(requestArr);
+        returnArr['scoreBoardBowler'] = await helper.scoreBoardBowler(requestArr);
+        returnArr['extraruns'] = await helper.extrasRun(requestArr);
+        if(returnArr['scoreBoardBatting'].length > 0 && returnArr['scoreBoardBowler'].length > 0 ){
+            commonFunction.successMesssage(res, "Score board get successfully", returnArr);
+        }else{
+            commonFunction.errorMesssage(res, "No data found", []); 
         }
+    } catch (error) {
+        commonFunction.successMesssage(res, "Internal server errro", []);    
     }
+},
+
+maidenOver: async(req,res) =>{
+
+
+
+}
+
 }
