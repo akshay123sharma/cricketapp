@@ -250,12 +250,58 @@ const bowlerDetail = async(requestArr)=>{
   const check_bowler = await score_board_bowling.findOne({
     where:{
         match_id: requestArr.match_id,
-        team_id: requestArr.team_id,
+        team_id: requestArr.team_id,  
         player_id: requestArr.player_id,
     }
 }) 
 return check_bowler;
 };
+
+
+const updateMaidenOverPoint = async (requestArr, updateBowling, updateBatting) => {
+  await score_board_batting.update(updateBatting, {
+      where: {
+          match_id:requestArr.match_id,
+          team_id:requestArr.team_id,
+          player_id: requestArr.bolwer_id,
+      },
+  });
+
+  await score_board_bowling.update(updateBowling, {
+      where: {
+        match_id:requestArr.match_id,
+          team_id:requestArr.team_id,
+          player_id: requestArr.bolwer_id,
+      },
+  });
+
+  return true;
+};
+
+
+
+const scoreBoardBattingDetail = async(requestArr)=>{
+  const getBatingArr = await score_board_batting.findOne({
+    where:{
+        match_id: requestArr.match_id,
+        team_id: requestArr.team_id,  
+        player_id: requestArr.bolwer_id,
+    }
+  });
+    return getBatingArr;
+};
+
+const scoreBoardBowlerDetail = async(requestArr)=>{
+  const getBowlingArr = await score_board_bowling.findOne({
+    where:{
+        match_id: requestArr.match_id,
+        team_id: requestArr.team_id,  
+        player_id: requestArr.bolwer_id,
+    }
+});
+    return getBowlingArr;
+};
+
 
 module.exports = {
   createUser,
@@ -269,5 +315,7 @@ module.exports = {
   scoreBoardBatting,
   scoreBoardBowler,
   extrasRun,
-  bowlerDetail
+  bowlerDetail,
+  scoreBoardBattingDetail,
+  scoreBoardBowlerDetail
 };

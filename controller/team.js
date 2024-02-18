@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 var db = require("../model");
 const secret = "mYs3cr3tK3yf0rJWTs!4fjnR2sT4PdPqL5y";
 const sequelize = require("sequelize");
+const { request } = require("../server");
 const Op = sequelize.Op;
 const user = db.users;
 const teams = db.teams;
@@ -221,11 +222,10 @@ selectPlayers: async(req,res)=>{
             };
             await score_board_batting.update(resetStrikerObj, {
                 where: {
-                    match_id: resultArr.match_id,
-                    team_id: resultArr.team_id,
+                    match_id: requestArr.match_id,
+                    team_id: requestArr.team_id,
                 },
             });
-            
             let playerObj = {
                 position : requestArr.position,
                 is_stricker: requestArr.is_stricker
@@ -391,10 +391,35 @@ scoreBoard: async (req, res) => {
     }
 },
 
-maidenOver: async(req,res) =>{
+maidenOver: async (req, res) => {
+// try{
+    const requestArr = req.body;
+    const _battingDetail = await helper.scoreBoardBattingDetail(requestArr);
+    console.log(_battingDetail,"==============1");
+    const _bowlingDetail = await helper.scoreBoardBowlerDetail(requestArr);
+    const _matchDetail = await matches.findByPk(requestArr.match_id);
 
-
-
+    const updateBowling = {
+        maidens_over: _bowlingDetail.maidens_over + 1,
+    };
+    let updateBatting;
+    if (_matchDetail.total_overs <= 10) {
+        updateBatting = {
+            fantasy_points: _battingDetail.fantasy_points + 16,
+        };
+    } else {
+        updateBatting = {
+            fantasy_points: _battingDetail.fantasy_points + 12,
+        };
+    }
+    const updateBowler = await helper.updateMaidenOverPoint(requestArr,updateBowling,updateBatting);
+    if(updateBowler){
+        commonFunction.successMesssage(res, "Update Successfully", {});
+    }else{
+        commonFunction.errorMesssage(res, "No data found", {}); 
+    }
+// } catch (error) {
+//     commonFunction.successMesssage(res, "Internal server errro", {});    
+// }
 }
-
 }
