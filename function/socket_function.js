@@ -3,6 +3,7 @@ const sequelize = require("sequelize");
 var moment = require("moment");
 const { response } = require("../server");
 var socketfunction = require("./socket_common");
+var helperFunction = require("./helper");
 const Op = sequelize.Op;
 const user = db.users;
 const score_board_batting = db.score_board_batting;
@@ -44,6 +45,8 @@ module.exports = {
               socketfunction.playerDetailById(data),
               socketfunction.bowlerDetailById(data),
           ]);
+
+          const player2_id = await playerTwoDetailById(data);
           const match_detail = await socketfunction.matchDetail(data.match_id);
           // Check if the current event is an extra
           const isExtra = [8, 9, 10, 11].includes(data.type);
@@ -54,6 +57,18 @@ module.exports = {
           }else{
             fantasy_points = await socketfunction.fantasyPointBatsmanT20(playerDetail, data, isExtra);
           }  
+
+
+
+          const checkBowlerEntry = await helperFunction.getBattingDetailsOfBowler(data);
+          let bowler_fantasy_points = checkBowlerEntry.fantasy_points;
+          if(match_detail.total_over <= 10){
+               bowler_fantasy_points = await socketfunction.fantasyPointBolwerT10(checkBowlerEntry,bowlerDetail, data);
+          }else{
+              // bowler_fantasy_points = await socketfunction.fantasyPointBolwerT20(playerDetail, data, isExtra);
+          }
+
+
           // Calculate batsman object
           const batsmanObj = {
               balls: playerDetail.balls + 1,
@@ -109,6 +124,11 @@ module.exports = {
                   id: playerDetail.player_id,
                   run: isExtra ? playerDetail.run : playerDetail.run + data.run,
                   balls: playerDetail.balls + 1,
+              },
+              batsman_2: {
+                id: player2_id.player_id,
+                run: player2_id.run,
+                balls: player2_id.balls,
               },
               bowler: {
                   id: bowlerDetail.player_id,

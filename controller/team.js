@@ -332,26 +332,13 @@ changeStricker: async (req, res) => {
 outPlayer: async(req,res) => {
     try{
             const requestArr = req.body;
-
-            const updateScorer = {
-                dismissal_type: requestArr.dismissal_type,
-                bowler_id : requestArr.bowler_id,
-                fielder_id: requestArr.fielder_id,
-                is_stricker: 0
-            };
-
-            const updateOutDetail = await score_board_batting.update(updateScorer, {
-                where: {
-                    match_id: requestArr.match_id,
-                    team_id: requestArr.team_id,
-                    player_id: requestArr.player_id,
-                },
-            });
-
-            if(updateOutDetail){
-                const checkBowlerEntry = await helper.checkBowlerEntry(requestArr);
+            const _match_detail = await matches.findByPk(requestArr.match_id);
+            const update_dismissal = await helper.dismissalUpdate(requestArr);
+            if (update_dismissal) {
+                const checkBowlerEntry = await helper.checkBowlerEntryOut(requestArr);
                 const updateBowler = {
                     wicket: checkBowlerEntry.wicket + 1,
+                    balls: checkBowlerEntry.balls + 1,
                 };
                 if(requestArr.dismissal_type != 6 && requestArr.dismissal_type !=8){
                     const updateOutDetail = await score_board_bowling.update(updateBowler, {
@@ -362,12 +349,19 @@ outPlayer: async(req,res) => {
                         },
                     });
                     if (updateOutDetail) {
+                        const _batting_detail_of_bowler = await helper.getBattingDetailsOfBowler(requestArr);
+                        requestArr.wicket = checkBowlerEntry.wicket + 1;
+                        let _update_bolwer_fantasy = {};
+                        if(_match_detail.total_over <= 10){
+                             _update_bolwer_fantasy = await helper.updateBowlerFantasyT10(requestArr,_batting_detail_of_bowler);
+                        }else{
+                             _update_bolwer_fantasy = await helper.updateBowlerFantasyT20(requestArr,_batting_detail_of_bowler);
+                        } 
                         commonFunction.successMesssage(res, "Updated successfully", {});
                     } else {
                         commonFunction.errorMesssage(res, "Error while updating the data", {});
                     }
                 }
-                commonFunction.successMesssage(res, "Updated successfully", {});
             } 
         } catch (error) {
             commonFunction.successMesssage(res, "Internal server error", {});    
@@ -392,34 +386,32 @@ scoreBoard: async (req, res) => {
 },
 
 maidenOver: async (req, res) => {
-// try{
-    const requestArr = req.body;
-    const _battingDetail = await helper.scoreBoardBattingDetail(requestArr);
-    console.log(_battingDetail,"==============1");
-    const _bowlingDetail = await helper.scoreBoardBowlerDetail(requestArr);
-    const _matchDetail = await matches.findByPk(requestArr.match_id);
-
-    const updateBowling = {
-        maidens_over: _bowlingDetail.maidens_over + 1,
-    };
-    let updateBatting;
-    if (_matchDetail.total_overs <= 10) {
-        updateBatting = {
-            fantasy_points: _battingDetail.fantasy_points + 16,
+    try{
+        const requestArr = req.body;
+        const _battingDetail = await helper.getBattingDetails(requestArr);
+        const _bowlingDetail = await helper.getBowlerDetails(requestArr);
+        const _matchDetail = await matches.findByPk(requestArr.match_id);
+        const updateBowling = {
+            mainders_over: _bowlingDetail.mainders_over + 1,
         };
-    } else {
-        updateBatting = {
-            fantasy_points: _battingDetail.fantasy_points + 12,
-        };
+        let updateBatting;
+        if (_matchDetail.total_overs <= 10) {
+            updateBatting = {
+                fantasy_points: _battingDetail.fantasy_points + 16,
+            };
+        } else {
+            updateBatting = {
+                fantasy_points: _battingDetail.fantasy_points + 12,
+            };
+        }
+        const updateBowler = await helper.updateMaidenOverPoint(requestArr,updateBowling,updateBatting);
+        if(updateBowler){
+            commonFunction.successMesssage(res, "Update Successfully", {});
+        }else{
+            commonFunction.errorMesssage(res, "No data found", {}); 
+        }
+    } catch (error) {
+        commonFunction.successMesssage(res, "Internal server errro", {});    
     }
-    const updateBowler = await helper.updateMaidenOverPoint(requestArr,updateBowling,updateBatting);
-    if(updateBowler){
-        commonFunction.successMesssage(res, "Update Successfully", {});
-    }else{
-        commonFunction.errorMesssage(res, "No data found", {}); 
-    }
-// } catch (error) {
-//     commonFunction.successMesssage(res, "Internal server errro", {});    
-// }
-}
+  }
 }

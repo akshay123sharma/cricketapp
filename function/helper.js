@@ -153,6 +153,17 @@ const checkBowlerEntry = async(dataArr)=>{
    return checkbowler;
 };
 
+const checkBowlerEntryOut = async(dataArr)=>{
+  const check_bowler = await score_board_bowling.findOne({
+    where: {
+      match_id: dataArr.match_id,
+      team_id:dataArr.team2_id,
+      player_id:dataArr.bowler_id
+    },
+  });
+ return check_bowler;
+};
+
 const scoreBoardBatting = async(dataArr) => {
   const scoreBoardBattingArr = await score_board_batting.findAll({
           attributes: [
@@ -263,44 +274,147 @@ const updateMaidenOverPoint = async (requestArr, updateBowling, updateBatting) =
       where: {
           match_id:requestArr.match_id,
           team_id:requestArr.team_id,
-          player_id: requestArr.bolwer_id,
+          player_id: requestArr.bowler_id,
       },
   });
 
   await score_board_bowling.update(updateBowling, {
       where: {
-        match_id:requestArr.match_id,
+          match_id:requestArr.match_id,
           team_id:requestArr.team_id,
-          player_id: requestArr.bolwer_id,
+          player_id: requestArr.bowler_id,
       },
   });
+  return true;
+};
 
+
+// use only for bolwer fantsay point.
+const getBattingDetails = async (requestArr) => {
+  return await score_board_batting.findOne({
+      where: {
+          match_id: requestArr.match_id,
+          team_id: requestArr.team_id,
+          player_id: requestArr.bowler_id,
+      }
+  });
+};
+
+const getBowlerDetails = async (requestArr) => {
+  return await score_board_bowling.findOne({
+      where: {
+          match_id: requestArr.match_id,
+          team_id: requestArr.team_id,
+          player_id: requestArr.bowler_id,
+      }
+  });
+};
+
+const getBattingDetailsOfBowler = async (requestArr) => {
+  return await score_board_batting.findOne({
+      where: {
+          match_id: requestArr.match_id,
+          team_id: requestArr.team2_id,
+          player_id: requestArr.bowler_id,
+      }
+  });
+};
+
+
+// on out dismissal update.
+const dismissalUpdate = async(requestArr) => {
+      const batsmandet = await score_board_batting.findOne({
+        match_id: requestArr.match_id,
+        team_id: requestArr.team_id,
+        player_id: requestArr.player_id,
+      });
+      let fantasy_points = batsmandet.fantasy_points;
+      if (batsmandet.run === 0) {
+          fantasy_points -= 2;
+      }
+      const updateDetail = {
+          dismissal_type: requestArr.dismissal_type,
+          bowler_id: requestArr.bowler_id,
+          fielder_id: requestArr.fielder_id,
+          is_stricker: 0,
+          balls: batsmandet.balls + 1,
+          fantasy_points: fantasy_points,
+      };
+       await score_board_batting.update(updateDetail, {
+          where: {
+              match_id: requestArr.match_id,
+              team_id: requestArr.team_id,
+              player_id: requestArr.player_id,
+          },
+      });
+      return true;
+};
+
+
+const updateBowlerFantasyT10 = async (requestArr,_batting_detail_of_bowler) => {
+  requestArr.fantasy_points =_batting_detail_of_bowler.fantasy_points;
+  requestArr.total_wickets = requestArr.wicket;
+  let extraFantasyPoints = 0;
+  if (requestArr.dismissal_type == 1 || requestArr.dismissal_type == 7) {
+      extraFantasyPoints += 8;
+  }
+  if (requestArr.total_wickets == 2) {
+    extraFantasyPoints += 8;
+  }
+  if (requestArr.total_wickets == 3) {
+    extraFantasyPoints += 16;
+  }
+  const fantasyObj = {
+      fantasy_points: requestArr.fantasy_points + 25 + extraFantasyPoints,
+  };
+  await score_board_batting.update(fantasyObj, {
+      where: {
+          match_id: requestArr.match_id,
+          team_id: requestArr.team2_id,
+          player_id: requestArr.bowler_id,
+      },
+  });
+  return true;
+};
+
+
+const updateBowlerFantasyT20 = async (requestArr,_batting_detail_of_bowler) => {
+  requestArr.fantasy_points =_batting_detail_of_bowler.fantasy_points;
+  requestArr.total_wickets = requestArr.wicket;
+  let extraFantasyPoints = 0;
+  if (requestArr.dismissal_type == 1 || requestArr.dismissal_type == 7) {
+      extraFantasyPoints += 8;
+  }
+
+  if (requestArr.total_wickets == 3) {
+    extraFantasyPoints += 4;
+  }
+
+  if (requestArr.total_wickets == 4) {
+    extraFantasyPoints += 8;
+  }
+
+  if (requestArr.total_wickets == 4) {
+    extraFantasyPoints += 16;
+  }
+  const fantasyObj = {
+      fantasy_points: requestArr.fantasy_points + 25 + extraFantasyPoints,
+  };
+  await score_board_batting.update(fantasyObj, {
+      where: {
+          match_id: requestArr.match_id,
+          team_id: requestArr.team2_id,
+          player_id: requestArr.bowler_id,
+      },
+  });
   return true;
 };
 
 
 
-const scoreBoardBattingDetail = async(requestArr)=>{
-  const getBatingArr = await score_board_batting.findOne({
-    where:{
-        match_id: requestArr.match_id,
-        team_id: requestArr.team_id,  
-        player_id: requestArr.bolwer_id,
-    }
-  });
-    return getBatingArr;
-};
 
-const scoreBoardBowlerDetail = async(requestArr)=>{
-  const getBowlingArr = await score_board_bowling.findOne({
-    where:{
-        match_id: requestArr.match_id,
-        team_id: requestArr.team_id,  
-        player_id: requestArr.bolwer_id,
-    }
-});
-    return getBowlingArr;
-};
+
+
 
 
 module.exports = {
@@ -312,10 +426,16 @@ module.exports = {
   getAllUpcomingMatchList,
   addPlayerInScoreBoardTable,
   checkBowlerEntry,
+  checkBowlerEntryOut,
   scoreBoardBatting,
   scoreBoardBowler,
   extrasRun,
   bowlerDetail,
-  scoreBoardBattingDetail,
-  scoreBoardBowlerDetail
+  getBattingDetails,
+  getBattingDetailsOfBowler,
+  getBowlerDetails,
+  updateMaidenOverPoint,
+  dismissalUpdate,
+  updateBowlerFantasyT10,
+  updateBowlerFantasyT20
 };

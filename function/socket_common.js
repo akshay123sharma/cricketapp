@@ -43,6 +43,31 @@ module.exports = {
         return [];
       }
   },
+
+
+
+playerTwoDetailById : async  (data) => {
+    try {
+      const _player_detail = await score_board_batting.findOne({
+        where: {
+          player_id: data.player2_id,
+          team_id: data.team_id,
+          match_id: data.match_id,
+        },
+        raw:true,
+      });
+      return _player_detail || [];
+    } catch (error) {
+      console.error("Error fetching player detail:", error);
+      return [];
+    }
+},
+
+
+
+
+
+
       
   bowlerDetailById : async (data)=>{
       try {
@@ -256,6 +281,39 @@ module.exports = {
           }
         });
         return fantasy_points;
+  },
+
+
+  fantasyPointBolwerT10: async(batsmanbowlerDetail,bowlerDetail,data)=>{
+    let fantasyObj = {};
+    let extraFantasyPoints = 0;
+    if(bowlerDetail.balls > 6){
+      if (batsmanbowlerDetail.economy <= 5 && batsmanbowlerDetail.economy_below == 0) {
+        if (batsmanbowlerDetail.economy_above == 1) {
+          extraFantasyPoints -= 2;
+        } 
+        extraFantasyPoints += 10;
+        fantasyObj.economy_below= 1;
+        fantasyObj.economy_above= 0;
+      } else if (batsmanbowlerDetail.economy >  8 && batsmanbowlerDetail.economy_above == 1) {
+        if (batsmanbowlerDetail.economy_below == 1) {
+          extraFantasyPoints -= 10;
+        }
+        extraFantasyPoints -= 2;
+        fantasyObj.economy_below= 0;
+        fantasyObj.economy_above= 1;
+      }
+    }
+    await score_board_batting.update(fantasyObj, {
+      where: {
+        match_id: data.match_id,
+        team_id: data.team2_id,
+        player_id : data.bolwer_id
+      }
+    });
+
+    return extraFantasyPoints;
+  
   }
 
 };

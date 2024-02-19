@@ -120,6 +120,16 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: true,
         defaultValue: 0,
       },
+      economy_below: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+      },
+      economy_above: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+      }
     },
     {
       sequelize,

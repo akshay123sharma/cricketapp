@@ -871,6 +871,54 @@
             }
           }
         }
+      },
+      "/maiden_over": {
+        "post": {
+          "tags": ["Teams"],
+          "summary": "When over complete and over become maiden then this api hit",
+          "operationId": "maiden_over",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                "name": "match_id",
+                "in": "formData",
+                "description": "match_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "team_id",
+                "in": "formData",
+                "description": "team_id of bowling side",
+                "required": true,
+                "type": "string"
+              },
+              {
+              "name": "bowler_id",
+              "in": "formData",
+              "description": "player_id",
+              "required": true,
+              "type": "string"
+             }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
       }
     },
     "securityDefinitions": {
