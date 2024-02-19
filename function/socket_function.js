@@ -41,34 +41,25 @@ module.exports = {
 
   updateScore: async (data) => {
           // Retrieve player and bowler details asynchronously
-          const [playerDetail, bowlerDetail] = await Promise.all([
-              socketfunction.playerDetailById(data),
-              socketfunction.bowlerDetailById(data),
-          ]);
-
-          const player2_id = await socketfunction.playerTwoDetailById(data);
-          const match_detail = await socketfunction.matchDetail(data.match_id);
+          const [playerDetail, bowlerDetail, player2_id, match_detail] = await Promise.all([
+            socketfunction.playerDetailById(data),
+            socketfunction.bowlerDetailById(data),
+            socketfunction.playerTwoDetailById(data),
+            socketfunction.matchDetail(data.match_id),
+        ]);
           // Check if the current event is an extra
           const isExtra = [8, 9, 10, 11].includes(data.type);
-          // Calculate the fantasy point of batsman.
+          // Calculate the fantasy point of batsman and bowler
           let fantasy_points = playerDetail.fantasy_points;
-          if(match_detail.total_over <= 10){
-            fantasy_points = await socketfunction.fantasyPointBatsmanT10(playerDetail, data, isExtra);
-          }else{
-            fantasy_points = await socketfunction.fantasyPointBatsmanT20(playerDetail, data, isExtra);
-          }  
-
-
-
           const checkBowlerEntry = await helperFunction.getBattingDetailsOfBowler(data);
           let bowler_fantasy_points = checkBowlerEntry.fantasy_points;
           if(match_detail.total_over <= 10){
-               bowler_fantasy_points = await socketfunction.fantasyPointBolwerT10(checkBowlerEntry,bowlerDetail, data);
+            fantasy_points = await socketfunction.fantasyPointBatsmanT10(playerDetail, data, isExtra);
+            bowler_fantasy_points = await socketfunction.fantasyPointBolwerT10(checkBowlerEntry,bowlerDetail, data);
           }else{
-              // bowler_fantasy_points = await socketfunction.fantasyPointBolwerT20(playerDetail, data, isExtra);
-          }
-
-
+            fantasy_points = await socketfunction.fantasyPointBatsmanT20(playerDetail, data, isExtra);
+            bowler_fantasy_points = await socketfunction.fantasyPointBolwerT20(playerDetail, data, isExtra);
+          }  
           // Calculate batsman object
           const batsmanObj = {
               balls: playerDetail.balls + 1,
@@ -85,39 +76,28 @@ module.exports = {
             runs: bowlerDetail.runs + data.run,
             economy: ((bowlerDetail.runs + data.run) / (bowlerDetail.balls + 1)) * 6,
           };
-          // Condition object for updating batsman
-          const conditionBatsmanObj = {
-              match_id: data.match_id,
-              team_id: data.team_id,
-          };
-          const conditionBolwerObj = {
-            match_id: data.match_id,
-            team_id: data.team2_id,
-          };
 
-
-          console.log(conditionBolwerObj,"====Condition bowler object============")
-
-          console.log(bowlerObj,"==== bowler object============")
+          const bowlerFantasyPoint = { fantasy_points : bowler_fantasy_points};
+          const conditionBatsmanObj = { match_id: data.match_id, team_id: data.team_id };
+          const conditionBolwerObj = { match_id: data.match_id, team_id: data.team2_id };
           // Update batsman score if it's not an extra event
           if (!isExtra) {
-              await socketfunction.updateBatsmanScore(batsmanObj, conditionBatsmanObj, data.player1_id, data.player2_id);
+            await Promise.all([
+              socketfunction.updateBatsmanScore(batsmanObj, conditionBatsmanObj, data.player1_id, data.player2_id),
+              socketfunction.updateBatsmanBowlerFantasyScore(bowlerFantasyPoint, data)
+            ]);
           } else { // If it's an extra, update extras table
-              const extraObj = {
-                  match_id: data.match_id,
-                  team_id: data.team_id,
-                  type: data.type,
-                  count: data.run,
-              };
-              await socketfunction.updateExtras(extraObj);
+            const extraObj = { match_id: data.match_id, team_id: data.team_id, type: data.type, count: data.run };
+            await socketfunction.updateExtras(extraObj);
           }
           // Update bowler score
           await socketfunction.updateBowlerScore(bowlerObj, conditionBolwerObj, data.bowler_id);
-          // Fetch striker details
-          const strikerDetail = await socketfunction.stikerDetail(data);
           //Fetch total score and total overs.
-          const total_scrore = await socketfunction.totalScore(data);
-          const total_over = await socketfunction.totalOver(data);    
+          const [total_score, total_over,strikerDetail] = await Promise.all([
+            socketfunction.totalScore(data),
+            socketfunction.totalOver(data),
+            socketfunction.stikerDetail(data)
+        ]);   
           // Prepare response object
           const response = {
               batsman: {
@@ -140,10 +120,10 @@ module.exports = {
                   is_striker: strikerDetail.player_id,
               },
               scores: {
-                total_run: total_scrore,
+                total_run: total_score,
                 total_over:await socketfunction.formatOver(total_over),
             },
           };
           return response;
-  },
+    },
 };

@@ -107,13 +107,9 @@ playerTwoDetailById : async  (data) => {
   updateBowlerScore: async(bowlerObj, conditionObj,bowler_id) => {
       try {
           conditionObj.player_id = bowler_id;
-
-          console.log(conditionObj,"=======================on coomeon file")
           const update_bowler = await score_board_bowling.update(bowlerObj, {
               where: conditionObj,
           });
-
-          console.log(update_bowler,"============last response")
         return update_bowler;
       } catch (error) {
         console.error("Error updating batsman score:", error);
@@ -170,12 +166,8 @@ playerTwoDetailById : async  (data) => {
 
   fantasyPointBatsmanT10: async(playerDetail, data, isExtra) => {
         let fantasy_points = playerDetail.fantasy_points;
-        fantasy_points += (isExtra ? 0 : data.run);
-        if (data.type === 4) {
-            fantasy_points += 1;
-        } else if (data.type === 6) {
-            fantasy_points += 2;
-        }
+        // Update fantasy points based on runs and extras
+        fantasy_points += (isExtra ? 0 : data.run) + (data.type === 4 ? 1 : data.type === 6 ? 2 : 0);
         let updateObj = {};
         if (playerDetail.run >= 30 && playerDetail.is_thirty === 0) {
             updateObj.is_thirty = 1;
@@ -184,6 +176,9 @@ playerTwoDetailById : async  (data) => {
             updateObj.is_fifty = 1;
             fantasy_points += 12; // 4 points already added when reaching 30 runs.
         }
+    
+
+
         const strikeRate = ((playerDetail.run + (isExtra ? 0 : data.run)) / (playerDetail.balls + 1)) * 100;
         if(playerDetail.balls >= 5){
             if (strikeRate > 170 && playerDetail.strike_rate_70 == 0) {
@@ -214,6 +209,7 @@ playerTwoDetailById : async  (data) => {
               updateObj.strike_rate_70= 0;
             }
         }
+
         await score_board_batting.update(updateObj, {
           where: {
             match_id: data.match_id,
@@ -226,13 +222,7 @@ playerTwoDetailById : async  (data) => {
 
   fantasyPointBatsmanT20: async(playerDetail, data, isExtra) => {
         let fantasy_points = playerDetail.fantasy_points;
-        fantasy_points += (isExtra ? 0 : data.run);
-        if (data.type === 4) {
-            fantasy_points += 1;
-        } else if (data.type === 6) {
-            fantasy_points += 2;
-        }
-
+        fantasy_points += (isExtra ? 0 : data.run) + (data.type === 4 ? 1 : data.type === 6 ? 2 : 0);
         let updateObj = {};
         if (playerDetail.run >= 30 && playerDetail.is_thirty === 0) {
             updateObj.is_thirty = 1;
@@ -283,37 +273,73 @@ playerTwoDetailById : async  (data) => {
         return fantasy_points;
   },
 
-
-  fantasyPointBolwerT10: async(batsmanbowlerDetail,bowlerDetail,data)=>{
+   fantasyPointBolwerT10 : async (batsmanbowlerDetail, bowlerDetail, data) => {
+    let extraFantasyPoints = batsmanbowlerDetail.fantasy_points;
     let fantasyObj = {};
-    let extraFantasyPoints = 0;
-    if(bowlerDetail.balls > 6){
-      if (batsmanbowlerDetail.economy <= 5 && batsmanbowlerDetail.economy_below == 0) {
-        if (batsmanbowlerDetail.economy_above == 1) {
-          extraFantasyPoints -= 2;
-        } 
-        extraFantasyPoints += 10;
-        fantasyObj.economy_below= 1;
-        fantasyObj.economy_above= 0;
-      } else if (batsmanbowlerDetail.economy >  8 && batsmanbowlerDetail.economy_above == 1) {
-        if (batsmanbowlerDetail.economy_below == 1) {
-          extraFantasyPoints -= 10;
+    if (bowlerDetail.balls > 6) {
+        if (bowlerDetail.economy <= 5 && batsmanbowlerDetail.economy_below === 0) {
+            extraFantasyPoints += 10;
+            fantasyObj.economy_below = 1;
+            fantasyObj.economy_above = 0;
+        } else if (bowlerDetail.economy > 8 && batsmanbowlerDetail.economy_above === 0) {
+            if (batsmanbowlerDetail.economy_below === 1) {
+                extraFantasyPoints -= 10;
+            }
+            extraFantasyPoints -= 2;
+            fantasyObj.economy_below = 0;
+            fantasyObj.economy_above = 1;
         }
-        extraFantasyPoints -= 2;
-        fantasyObj.economy_below= 0;
-        fantasyObj.economy_above= 1;
-      }
+
+        await score_board_batting.update(fantasyObj, {
+            where: {
+                match_id: data.match_id,
+                team_id: data.team2_id,
+                player_id: data.bowler_id
+            }
+        });
     }
-    await score_board_batting.update(fantasyObj, {
+
+    return extraFantasyPoints;
+},
+
+
+
+  fantasyPointBolwerT20: async(batsmanbowlerDetail,bowlerDetail,data)=>{
+    let extraFantasyPoints = batsmanbowlerDetail.fantasy_points;
+    let fantasyObj = {};
+    if (bowlerDetail.balls > 6) {
+        if (bowlerDetail.economy <= 5 && batsmanbowlerDetail.economy_below === 0) {
+            extraFantasyPoints += 8;
+            fantasyObj.economy_below = 1;
+            fantasyObj.economy_above = 0;
+        } else if (bowlerDetail.economy > 8 && batsmanbowlerDetail.economy_above === 0) {
+            if (batsmanbowlerDetail.economy_below === 1) {
+                extraFantasyPoints -= 10;
+            }
+            extraFantasyPoints -= 3;
+            fantasyObj.economy_below = 0;
+            fantasyObj.economy_above = 1;
+        }
+
+        await score_board_batting.update(fantasyObj, {
+            where: {
+                match_id: data.match_id,
+                team_id: data.team2_id,
+                player_id: data.bowler_id
+            }
+        });
+    }
+    return extraFantasyPoints;
+  },
+
+  updateBatsmanBowlerFantasyScore: async(bowlerFantasyPoint,data) =>{
+    await score_board_batting.update(bowlerFantasyPoint, {
       where: {
         match_id: data.match_id,
         team_id: data.team2_id,
-        player_id : data.bolwer_id
+        player_id : data.bowler_id
       }
     });
-
-    return extraFantasyPoints;
-  
+     return true;
   }
-
 };

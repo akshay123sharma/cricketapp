@@ -331,38 +331,38 @@ changeStricker: async (req, res) => {
 
 outPlayer: async(req,res) => {
     try{
-            const requestArr = req.body;
-            const _match_detail = await matches.findByPk(requestArr.match_id);
-            const update_dismissal = await helper.dismissalUpdate(requestArr);
-            if (update_dismissal) {
-                const checkBowlerEntry = await helper.checkBowlerEntryOut(requestArr);
-                const updateBowler = {
-                    wicket: checkBowlerEntry.wicket + 1,
-                    balls: checkBowlerEntry.balls + 1,
-                };
-                if(requestArr.dismissal_type != 6 && requestArr.dismissal_type !=8){
-                    const updateOutDetail = await score_board_bowling.update(updateBowler, {
-                        where: {
-                            match_id: requestArr.match_id,
-                            team_id: requestArr.team2_id,
-                            player_id: requestArr.bowler_id,
-                        },
-                    });
-                    if (updateOutDetail) {
-                        const _batting_detail_of_bowler = await helper.getBattingDetailsOfBowler(requestArr);
-                        requestArr.wicket = checkBowlerEntry.wicket + 1;
-                        let _update_bolwer_fantasy = {};
-                        if(_match_detail.total_over <= 10){
-                             _update_bolwer_fantasy = await helper.updateBowlerFantasyT10(requestArr,_batting_detail_of_bowler);
-                        }else{
-                             _update_bolwer_fantasy = await helper.updateBowlerFantasyT20(requestArr,_batting_detail_of_bowler);
-                        } 
-                        commonFunction.successMesssage(res, "Updated successfully", {});
-                    } else {
-                        commonFunction.errorMesssage(res, "Error while updating the data", {});
-                    }
+        const requestArr = req.body;
+        const _match_detail = await matches.findByPk(requestArr.match_id);
+        const update_dismissal = await helper.dismissalUpdate(requestArr);
+        if (update_dismissal) {
+            const checkBowlerEntry = await helper.checkBowlerEntryOut(requestArr);
+            const updateBowler = {
+                wicket: checkBowlerEntry.wicket + 1,
+                balls: checkBowlerEntry.balls + 1,
+            };
+            if(requestArr.dismissal_type != 6 && requestArr.dismissal_type !=8){
+                const updateOutDetail = await score_board_bowling.update(updateBowler, {
+                    where: {
+                        match_id: requestArr.match_id,
+                        team_id: requestArr.team2_id,
+                        player_id: requestArr.bowler_id,
+                    },
+                });
+                if (updateOutDetail) {
+                    const _batting_detail_of_bowler = await helper.getBattingDetailsOfBowler(requestArr);
+                    requestArr.wicket = checkBowlerEntry.wicket + 1;
+                    let _update_bolwer_fantasy = {};
+                    if(_match_detail.total_over <= 10){
+                            _update_bolwer_fantasy = await helper.updateBowlerFantasyT10(requestArr,_batting_detail_of_bowler);
+                    }else{
+                            _update_bolwer_fantasy = await helper.updateBowlerFantasyT20(requestArr,_batting_detail_of_bowler);
+                    } 
+                    commonFunction.successMesssage(res, "Updated successfully", {});
+                } else {
+                    commonFunction.errorMesssage(res, "Error while updating the data", {});
                 }
-            } 
+            }
+        } 
         } catch (error) {
             commonFunction.successMesssage(res, "Internal server error", {});    
         }
