@@ -46,7 +46,7 @@ module.exports = {
               socketfunction.bowlerDetailById(data),
           ]);
 
-          const player2_id = await playerTwoDetailById(data);
+          const player2_id = await socketfunction.playerTwoDetailById(data);
           const match_detail = await socketfunction.matchDetail(data.match_id);
           // Check if the current event is an extra
           const isExtra = [8, 9, 10, 11].includes(data.type);
