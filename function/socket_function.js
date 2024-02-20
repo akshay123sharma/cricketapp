@@ -53,6 +53,7 @@ module.exports = {
           let fantasy_points = playerDetail.fantasy_points;
           const checkBowlerEntry = await helperFunction.getBattingDetailsOfBowler(data);
           let bowler_fantasy_points = checkBowlerEntry.fantasy_points;
+
           if(match_detail.total_over <= 10){
             fantasy_points = await socketfunction.fantasyPointBatsmanT10(playerDetail, data, isExtra);
             bowler_fantasy_points = await socketfunction.fantasyPointBolwerT10(checkBowlerEntry,bowlerDetail, data);
@@ -97,7 +98,8 @@ module.exports = {
             socketfunction.totalScore(data),
             socketfunction.totalOver(data),
             socketfunction.stikerDetail(data)
-        ]);   
+          ]);   
+
           // Prepare response object
           const response = {
               batsman: {
@@ -122,6 +124,7 @@ module.exports = {
               scores: {
                 total_run: total_score,
                 total_over:await socketfunction.formatOver(total_over),
+                match_total_overs : match_detail.total_over
             },
           };
           return response;
