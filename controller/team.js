@@ -343,10 +343,6 @@ outPlayer: async(req,res) => {
             }else{
                 _update_player_fantasy = await helper.updateBowlerFantasyT20(requestArr,fielder_detail);
             } 
-
-
-
-
             const checkBowlerEntry = await helper.checkBowlerEntryOut(requestArr);
             const updateBowler = {
                 wicket: checkBowlerEntry.wicket + 1,

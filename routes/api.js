@@ -24,7 +24,7 @@ module.exports = function (app) {
     app.route("/apis/select_players").post(verifyTokenMiddleware,teamModule.selectPlayers);
     app.route("/apis/next_bowler").post(verifyTokenMiddleware,teamModule.nextBowler);
     app.route("/apis/change_stricker").post(verifyTokenMiddleware,teamModule.changeStricker);
-    app.route("/apis/out_player").post(teamModule.outPlayer);
+    app.route("/apis/out_player").post(verifyTokenMiddleware,teamModule.outPlayer);
     app.route("/apis/score_board").get(verifyTokenMiddleware,teamModule.scoreBoard);
     app.route("/apis/maiden_over").post(verifyTokenMiddleware,teamModule.maidenOver);
 

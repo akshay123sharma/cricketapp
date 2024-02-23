@@ -75,6 +75,7 @@ module.exports = {
           const bowlerObj = {
             balls: isExtra ? bowlerDetail.balls : bowlerDetail.balls + 1,
             runs: bowlerDetail.runs + data.run,
+            mainders_over: bowlerDetail.mainders_over,
             economy: ((bowlerDetail.runs + data.run) / (bowlerDetail.balls + 1)) * 6,
           };
 
