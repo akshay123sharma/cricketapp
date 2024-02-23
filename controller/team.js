@@ -330,16 +330,31 @@ changeStricker: async (req, res) => {
 },
 
 outPlayer: async(req,res) => {
-    try{
+    // try{
         const requestArr = req.body;
         const _match_detail = await matches.findByPk(requestArr.match_id);
         const update_dismissal = await helper.dismissalUpdate(requestArr);
         if (update_dismissal) {
+            let _update_player_fantasy = {};
+            //  here manage the bowled and lbw case that point added too that particular bowler.
+            if(_match_detail.total_over <= 10){
+                 const fielder_detail = await helper.getFielderDetail(requestArr);
+                _update_player_fantasy = await helper.updateFielderFantasyT10(requestArr,fielder_detail);
+            }else{
+                _update_player_fantasy = await helper.updateBowlerFantasyT20(requestArr,fielder_detail);
+            } 
+
+
+
+
             const checkBowlerEntry = await helper.checkBowlerEntryOut(requestArr);
             const updateBowler = {
                 wicket: checkBowlerEntry.wicket + 1,
                 balls: checkBowlerEntry.balls + 1,
             };
+
+            // if user run out and retired hurt  then no wicket added on bowler count
+            
             if(requestArr.dismissal_type != 6 && requestArr.dismissal_type !=8){
                 const updateOutDetail = await score_board_bowling.update(updateBowler, {
                     where: {
@@ -352,6 +367,7 @@ outPlayer: async(req,res) => {
                     const _batting_detail_of_bowler = await helper.getBattingDetailsOfBowler(requestArr);
                     requestArr.wicket = checkBowlerEntry.wicket + 1;
                     let _update_bolwer_fantasy = {};
+                    //  here manage the bowled and lbw case that point added too that particular bowler.
                     if(_match_detail.total_over <= 10){
                             _update_bolwer_fantasy = await helper.updateBowlerFantasyT10(requestArr,_batting_detail_of_bowler);
                     }else{
@@ -363,9 +379,9 @@ outPlayer: async(req,res) => {
                 }
             }
         } 
-        } catch (error) {
-            commonFunction.successMesssage(res, "Internal server error", {});    
-        }
+        // } catch (error) {
+        //     commonFunction.successMesssage(res, "Internal server error", {});    
+        // }
 },
 
 scoreBoard: async (req, res) => {

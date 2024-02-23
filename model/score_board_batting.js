@@ -129,6 +129,11 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0,
+      },
+      three_wicket: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
       }
     },
     {

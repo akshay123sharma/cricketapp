@@ -324,9 +324,11 @@ const getBattingDetailsOfBowler = async (requestArr) => {
 // on out dismissal update.
 const dismissalUpdate = async(requestArr) => {
       const batsmandet = await score_board_batting.findOne({
-        match_id: requestArr.match_id,
-        team_id: requestArr.team_id,
-        player_id: requestArr.player_id,
+        where:{
+          match_id: requestArr.match_id,
+          team_id: requestArr.team_id,
+          player_id: requestArr.player_id,
+        }
       });
       let fantasy_points = batsmandet.fantasy_points;
       if (batsmandet.run === 0) {
@@ -411,9 +413,60 @@ const updateBowlerFantasyT20 = async (requestArr,_batting_detail_of_bowler) => {
 };
 
 
+const getFielderDetail = async (requestArr) => {
+  return await score_board_batting.findOne({
+      where: {
+          match_id: requestArr.match_id,
+          team_id: requestArr.team2_id,
+          player_id: requestArr.fielder_id,
+      }
+  });
+};
 
 
 
+
+
+const updateFielderFantasyT10 = async (requestArr,fielder_detail) => {
+  requestArr.fantasy_points = fielder_detail.fantasy_points;
+  let extraFantasyPoints = 0;
+  const fantasyObj = {};
+  const fielderDetails = await score_board_batting.findOne({
+        attributes: ['fielder_id'],
+        where: {
+            match_id: requestArr.match_id,
+            dismissal_type: 1,
+            fielder_id: requestArr.fielder_id
+        },
+        group: ['fielder_id'],
+        having: sequelize.literal('COUNT(*) > 3'),
+  });
+// three wicket bonus
+  if(fielderDetails && fielderDetails.fielder_id == requestArr.fielder_id && fielder_detail.three_wicket == 0){
+      extraFantasyPoints += 4;
+      fantasyObj.three_wicket = 1;
+  }
+
+  // stumped
+  if (requestArr.dismissal_type == 5) {
+      extraFantasyPoints += 12;
+  }else if(requestArr.dismissal_type == 1){ // catch
+    extraFantasyPoints += 8;
+  }else if(requestArr.dismissal_type == 6 ){ //run out
+    extraFantasyPoints += 12;
+  }
+  
+  let total_point = requestArr.fantasy_points + extraFantasyPoints;
+  fantasyObj.fantasy_points = total_point;
+  await score_board_batting.update(fantasyObj, {
+    where: {
+        match_id: requestArr.match_id,
+        team_id: requestArr.team2_id,
+        player_id: requestArr.fielder_id,
+    },
+  });
+return true;
+};
 
 
 
@@ -437,5 +490,7 @@ module.exports = {
   updateMaidenOverPoint,
   dismissalUpdate,
   updateBowlerFantasyT10,
-  updateBowlerFantasyT20
+  updateBowlerFantasyT20,
+  getFielderDetail,
+  updateFielderFantasyT10
 };
