@@ -10,22 +10,22 @@ const match = db.matches;
 const extras = db.extras;
 module.exports = {
 
-  stikerDetail: async  (data) => {
-          try {
-            let striker_detail = score_board_batting.findOne({
-              where: {
-                match_id: data.match_id,
-                team_id: data.team_id,
-                is_stricker:1
-              },
-              raw:true,
-          });
-            return striker_detail || [];
-          } catch (error) {
-            console.error("Error strike player detail:", error);
-            return [];
-          }
-  },      
+stikerDetail: async  (data) => {
+    try {
+      let striker_detail = score_board_batting.findOne({
+        where: {
+          match_id: data.match_id,
+          team_id: data.team_id,
+          is_stricker:1
+        },
+        raw:true,
+    });
+      return striker_detail || [];
+    } catch (error) {
+      console.error("Error strike player detail:", error);
+      return [];
+    }
+},      
 
   playerDetailById : async  (data) => {
       try {

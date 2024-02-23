@@ -857,6 +857,13 @@
                 "description": "team_id",
                 "required": true,
                 "type": "number"
+              },
+              {
+                "name": "team2_id",
+                "in": "query",
+                "description": "team_id",
+                "required": true,
+                "type": "number"
               }
           ],
           "responses": {

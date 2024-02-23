@@ -234,7 +234,7 @@ const scoreBoardBowler = async(dataArr)=>{
         ],
     ],
     where: {
-        team_id: dataArr.team_id,
+        team_id: dataArr.team2_id,
         match_id: dataArr.match_id
     },
     raw: true
