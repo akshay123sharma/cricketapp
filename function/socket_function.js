@@ -53,13 +53,12 @@ module.exports = {
           let fantasy_points = playerDetail.fantasy_points;
           const checkBowlerEntry = await helperFunction.getBattingDetailsOfBowler(data);
           let bowler_fantasy_points = checkBowlerEntry.fantasy_points;
-
           if(match_detail.total_over <= 10){
             fantasy_points = await socketfunction.fantasyPointBatsmanT10(playerDetail, data, isExtra);
             bowler_fantasy_points = await socketfunction.fantasyPointBolwerT10(checkBowlerEntry,bowlerDetail, data);
           }else{
             fantasy_points = await socketfunction.fantasyPointBatsmanT20(playerDetail, data, isExtra);
-            bowler_fantasy_points = await socketfunction.fantasyPointBolwerT20(playerDetail, data, isExtra);
+            bowler_fantasy_points = await socketfunction.fantasyPointBolwerT20(checkBowlerEntry, data, isExtra);
           }  
           // Calculate batsman object
           const batsmanObj = {
@@ -79,6 +78,9 @@ module.exports = {
           };
 
           const bowlerFantasyPoint = { fantasy_points : bowler_fantasy_points};
+
+
+          console.log(bowlerFantasyPoint,"AKSHAY SHARMA===============")
           const conditionBatsmanObj = { match_id: data.match_id, team_id: data.team_id };
           const conditionBolwerObj = { match_id: data.match_id, team_id: data.team2_id };
           // Update batsman score if it's not an extra event

@@ -185,23 +185,27 @@ const scoreBoardBatting = async(dataArr) => {
               'createdAt',
               'updatedAt',
               [
-                  sequelize.literal(
-                    "(select name from users where id =`score_board_batting`.`player_id` order by id desc  LIMIT 1)"
-                  ),
-                  "player_name",
-              ],
+                sequelize.literal(
+                    "(SELECT CASE WHEN name IS NOT NULL THEN name ELSE mobile_number END FROM users WHERE id = `score_board_batting`.`player_id` ORDER BY id DESC LIMIT 1)"
+                ),
+                "player_name",
+            ],
+            
               [
-                  sequelize.literal(
-                    "(select name from users where id =`score_board_batting`.`bowler_id` order by id desc  LIMIT 1)"
-                  ),
-                  "bowler_name",
-              ],
+                sequelize.literal(
+                    "(SELECT CASE WHEN name IS NOT NULL THEN name ELSE mobile_number END FROM users WHERE id = `score_board_batting`.`bowler_id` ORDER BY id DESC LIMIT 1)"
+                ),
+                "bowler_name",
+            ],
+            
+
               [
-                  sequelize.literal(
-                    "(select name from users where id =`score_board_batting`.`fielder_id` order by id desc  LIMIT 1)"
-                  ),
-                  "filder_name",
-                ],
+                sequelize.literal(
+                    "(SELECT CASE WHEN name IS NOT NULL THEN name ELSE mobile_number END FROM users WHERE id = `score_board_batting`.`fielder_id` ORDER BY id DESC LIMIT 1)"
+                ),
+                "fielder_name",
+            ],
+
           ],
           where: {
               team_id: dataArr.team_id,
@@ -224,14 +228,16 @@ const scoreBoardBowler = async(dataArr)=>{
         'wicket',
         'economy',
         'balls',
+        'mainders_over',
         'createdAt',
         'updatedAt',
         [
-            sequelize.literal(
-              "(select name from users where id =`score_board_bowlers`.`player_id` order by id desc  LIMIT 1)"
-            ),
-            "bowler_name",
+          sequelize.literal(
+              "(SELECT CASE WHEN name IS NOT NULL THEN name ELSE mobile_number END FROM users WHERE id = `score_board_bowlers`.`player_id` ORDER BY id DESC LIMIT 1)"
+          ),
+          "bowler_name",
         ],
+      
     ],
     where: {
         team_id: dataArr.team2_id,
@@ -257,17 +263,16 @@ const extrasRun = async(dataArr) => {
     return counts;
 };
 
-const bowlerDetail = async(requestArr)=>{
+const bowlerDetail = async(requestArr) => {
   const check_bowler = await score_board_bowling.findOne({
     where:{
         match_id: requestArr.match_id,
         team_id: requestArr.team_id,  
         player_id: requestArr.player_id,
     }
-}) 
-return check_bowler;
+  });
+    return check_bowler;
 };
-
 
 const updateMaidenOverPoint = async (requestArr, updateBowling, updateBatting) => {
   await score_board_batting.update(updateBatting, {
@@ -450,7 +455,7 @@ const updateFielderFantasyT10 = async (requestArr,fielder_detail) => {
   // stumped
   if (requestArr.dismissal_type == 5) {
       extraFantasyPoints += 12;
-  }else if(requestArr.dismissal_type == 1){ // catch
+  }else if(requestArr.dismissal_type == 2){ // catch
     extraFantasyPoints += 8;
   }else if(requestArr.dismissal_type == 6 ){ //run out
     extraFantasyPoints += 12;
@@ -468,6 +473,47 @@ const updateFielderFantasyT10 = async (requestArr,fielder_detail) => {
 return true;
 };
 
+const updateFielderFantasyT20 = async (requestArr,fielder_detail) => {
+  requestArr.fantasy_points = fielder_detail.fantasy_points;
+  let extraFantasyPoints = 0;
+  const fantasyObj = {};
+  const fielderDetails = await score_board_batting.findOne({
+        attributes: ['fielder_id'],
+        where: {
+            match_id: requestArr.match_id,
+            dismissal_type: 1,
+            fielder_id: requestArr.fielder_id
+        },
+        group: ['fielder_id'],
+        having: sequelize.literal('COUNT(*) > 3'),
+  });
+// three wicket bonus
+  if(fielderDetails && fielderDetails.fielder_id == requestArr.fielder_id && fielder_detail.three_wicket == 0){
+      extraFantasyPoints += 4;
+      fantasyObj.three_wicket = 1;
+  }
+
+  // stumped
+  if (requestArr.dismissal_type == 5) {
+      extraFantasyPoints += 12;
+  }else if(requestArr.dismissal_type == 2){ // catch
+    extraFantasyPoints += 8;
+  }else if(requestArr.dismissal_type == 6 ){ //run out
+    extraFantasyPoints += 12;
+  }
+  
+  let total_point = requestArr.fantasy_points + extraFantasyPoints;
+  fantasyObj.fantasy_points = total_point;
+  await score_board_batting.update(fantasyObj, {
+    where: {
+        match_id: requestArr.match_id,
+        team_id: requestArr.team2_id,
+        player_id: requestArr.fielder_id,
+    },
+  });
+return true;
+
+};
 
 
 module.exports = {
@@ -492,5 +538,6 @@ module.exports = {
   updateBowlerFantasyT10,
   updateBowlerFantasyT20,
   getFielderDetail,
-  updateFielderFantasyT10
+  updateFielderFantasyT10,
+  updateFielderFantasyT20
 };

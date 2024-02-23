@@ -336,12 +336,12 @@ outPlayer: async(req,res) => {
         const update_dismissal = await helper.dismissalUpdate(requestArr);
         if (update_dismissal) {
             let _update_player_fantasy = {};
-            //  here manage the bowled and lbw case that point added too that particular bowler.
+            //  here manage the other bowler  case that point added too that particular bowler.
             if(_match_detail.total_over <= 10){
                  const fielder_detail = await helper.getFielderDetail(requestArr);
                 _update_player_fantasy = await helper.updateFielderFantasyT10(requestArr,fielder_detail);
             }else{
-                _update_player_fantasy = await helper.updateBowlerFantasyT20(requestArr,fielder_detail);
+                _update_player_fantasy = await helper.updateFielderFantasyT20(requestArr,fielder_detail);
             } 
             const checkBowlerEntry = await helper.checkBowlerEntryOut(requestArr);
             const updateBowler = {
@@ -350,7 +350,6 @@ outPlayer: async(req,res) => {
             };
 
             // if user run out and retired hurt  then no wicket added on bowler count
-            
             if(requestArr.dismissal_type != 6 && requestArr.dismissal_type !=8){
                 const updateOutDetail = await score_board_bowling.update(updateBowler, {
                     where: {
