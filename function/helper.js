@@ -182,6 +182,7 @@ const scoreBoardBatting = async(dataArr) => {
               'dismissal_type',
               'bowler_id',
               'fielder_id',
+              'fantasy_points',
               'createdAt',
               'updatedAt',
               [
@@ -229,6 +230,7 @@ const scoreBoardBowler = async(dataArr)=>{
         'economy',
         'balls',
         'mainders_over',
+        'fantasy_points',
         'createdAt',
         'updatedAt',
         [
