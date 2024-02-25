@@ -987,6 +987,13 @@
                 "description": "match_id",
                 "required": true,
                 "type": "string"
+              },
+              {
+                "name": "match_result",
+                "in": "formData",
+                "description": "match_result (send here the winning team id )",
+                "required": true,
+                "type": "string"
               }
           ],
           "responses": {

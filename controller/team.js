@@ -454,25 +454,39 @@ outPlayerList: async(req,res) =>{
   },
 
   inningUpdate : async(req,res)=>{
-    // try{
+     try{
         const requestArr =  req.body;
-        let updateObj = {
-            'inning_status': 1
-        };
+        const match_detail = await matches.findOne({
+            where:{
+                id:requestArr.match_id
+            }
+        });
+
+        let updateObj ={};
+        if(match_detail.inning_status == 0){
+            updateObj = {
+                inning_status: 1,
+                match_result : 0
+            };
+        }else{
+            updateObj = {
+                inning_status : 2,
+                match_result : requestArr.match_result
+            }
+        }
         const update_inning_status = await matches.update(updateObj, {
             where: {
                  id: requestArr.match_id,
             },
         });
-
         if(update_inning_status){
             commonFunction.successMesssage(res, "Inning status updated sucessfully", {}); 
         }else{
             commonFunction.errorMesssage(res, "Error while updatign the data", {});
         }
-    // } catch (error) {
-    //     commonFunction.successMesssage(res, "Internal server errro", []);    
-    // }
+    } catch (error) {
+        commonFunction.successMesssage(res, "Internal server errro", []);    
+    }
   },
 
 
@@ -494,7 +508,7 @@ outPlayerList: async(req,res) =>{
         let positionobj = {
             position:lastRecord.position + 1,
         };
-        const update_position = await score_board_batting.update(positionobj, {
+        await score_board_batting.update(positionobj, {
             where: {
               match_id: requestArr.match_id,
               team_id: requestArr.team_id,

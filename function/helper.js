@@ -416,6 +416,7 @@ const dismissalUpdate = async(requestArr) => {
               player_id: requestArr.player_id,
           },
       });
+      
       return true;
 };
 
