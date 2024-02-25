@@ -425,5 +425,25 @@ maidenOver: async (req, res) => {
     } catch (error) {
         commonFunction.successMesssage(res, "Internal server errro", {});    
     }
+  },
+
+
+  outPlayerList: async(req,res) =>{
+    const requestArr = req.query;
+    const outPlayerArr = await score_board_batting.findAll({
+        where:{
+            match_id : requestArr.match_id,
+            team_id : requestArr.team_id,
+            dismissal_type: {
+                [sequelize.Op.not]: 0, 
+                [sequelize.Op.gt]: 0
+              },
+        }
+    });
+    if(outPlayerArr){
+        commonFunction.successMesssage(res, "Out player list get successfully", outPlayerArr);
+    }else{
+        commonFunction.errorMesssage(res, "N0 data found", []);
+    }
   }
 }

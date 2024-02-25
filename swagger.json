@@ -926,6 +926,47 @@
             }
           }
         }
+      },
+      "/out_player_list": {
+        "get": {
+          "tags": ["Teams"],
+          "summary": "Out player list array",
+          "operationId": "out_player_list",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                "name": "match_id",
+                "in": "query",
+                "description": "match_id",
+                "required": true,
+                "type": "number"
+              },
+              {
+                "name": "team_id",
+                "in": "query",
+                "description": "team_id",
+                "required": true,
+                "type": "number"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
       }
     },
     "securityDefinitions": {
