@@ -27,6 +27,6 @@ module.exports = function (app) {
     app.route("/apis/out_player").post(verifyTokenMiddleware,teamModule.outPlayer);
     app.route("/apis/score_board").get(verifyTokenMiddleware,teamModule.scoreBoard);
     app.route("/apis/maiden_over").post(verifyTokenMiddleware,teamModule.maidenOver);
-    app.route("/apis/out_player_list").post(verifyTokenMiddleware,teamModule.outPlayerList);
+    app.route("/apis/out_player_list").get(verifyTokenMiddleware,teamModule.outPlayerList);
 
 };
