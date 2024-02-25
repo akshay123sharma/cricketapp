@@ -57,13 +57,7 @@ module.exports = {
             user.findByPk(data.player1_id),
             user.findByPk(data.player2_id),
             user.findByPk(data.bowler_id),
-            await socketfunction.stikerDetail(data),
           ]);
-
-
-
-
-
 
           // Check if the current event is an extra
           const isExtra = [8, 9, 10, 11].includes(data.type);
@@ -115,6 +109,12 @@ module.exports = {
             socketfunction.totalOver(data),
             socketfunction.stikerDetail(data)
           ]);   
+
+        //   extras.sum('count', {
+        //     where: { team_id: data.team_id, match_id: data.match_id }
+        // })
+
+
 
           // Prepare response object
           const response = {
