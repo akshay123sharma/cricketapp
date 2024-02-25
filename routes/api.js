@@ -18,7 +18,7 @@ module.exports = function (app) {
     app.route("/apis/team_list").get(verifyTokenMiddleware,teamModule.teamList);
     app.route("/apis/team_detail/:team_id").get(verifyTokenMiddleware,teamModule.teamDetail);
     app.route("/apis/create_match").post(verifyTokenMiddleware,teamModule.createMatch);
-    app.route("/apis/match_list").get(teamModule.matchList);
+    app.route("/apis/match_list").get(verifyTokenMiddleware,teamModule.matchList);
     app.route("/apis/verify_scorer").post(verifyTokenMiddleware,teamModule.verifyScorer);
     app.route("/apis/toss_result").post(verifyTokenMiddleware,teamModule.tossResult);
     app.route("/apis/select_players").post(verifyTokenMiddleware,teamModule.selectPlayers);
@@ -29,5 +29,6 @@ module.exports = function (app) {
     app.route("/apis/maiden_over").post(verifyTokenMiddleware,teamModule.maidenOver);
     app.route("/apis/out_player_list").get(verifyTokenMiddleware,teamModule.outPlayerList);
     app.route("/apis/inning_update").post(verifyTokenMiddleware,teamModule.inningUpdate);
+    app.route("/apis/next_batsman").post(verifyTokenMiddleware,teamModule.nextBatsman);
 
 };

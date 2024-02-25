@@ -1001,6 +1001,54 @@
             }
           }
         }
+      },
+      "/next_batsman": {
+        "post": {
+          "tags": ["Teams"],
+          "summary": "next batsman select",
+          "operationId": "next_batsman",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                "name": "match_id",
+                "in": "formData",
+                "description": "match_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "team_id",
+                "in": "formData",
+                "description": "team_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "player_id",
+                "in": "formData",
+                "description": "player_id(player id which selected from list )",
+                "required": true,
+                "type": "string"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
       }
     },
     "securityDefinitions": {

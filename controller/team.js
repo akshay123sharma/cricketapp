@@ -473,5 +473,37 @@ outPlayerList: async(req,res) =>{
     // } catch (error) {
     //     commonFunction.successMesssage(res, "Internal server errro", []);    
     // }
+  },
+
+
+  nextBatsman: async(req,res)=>{
+    try{
+        let requestArr = req.body;
+        const lastRecord = await score_board_batting.findOne({
+            where: {
+                match_id: requestArr.match_id,
+                team_id: requestArr.team_id,
+                position: {
+                    [Op.not]: 0
+                }
+            },
+            order: [['position', 'DESC']],
+            limit: 1
+        });
+
+        let positionobj = {
+            position:lastRecord.position + 1,
+        };
+        const update_position = await score_board_batting.update(positionobj, {
+            where: {
+              match_id: requestArr.match_id,
+              team_id: requestArr.team_id,
+              player_id: requestArr.player_id,
+            },
+        });
+        commonFunction.successMesssage(res, "Record Updated successfully", {});
+    }catch(error){
+            commonFunction.errorMesssage(res, "Internal server error ",{});
+    }
   }
 }
