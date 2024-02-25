@@ -230,7 +230,6 @@ const scoreBoardBowler = async(dataArr)=>{
         'economy',
         'balls',
         'mainders_over',
-        'fantasy_points',
         'createdAt',
         'updatedAt',
         [
