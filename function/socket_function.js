@@ -109,13 +109,13 @@ module.exports = {
             socketfunction.stikerDetail(data)
           ]);   
 
-          const total_wickets = await score_board_bowling.count({
-            where: {
-              match_id: data.match_id,
-              team_id: data.team2_id,
-              wicket: { [sequelize.Op.gt]: 0 }
-            }
-          });
+          // const total_wickets = await score_board_bowling.count({
+          //   where: {
+          //     match_id: data.match_id,
+          //     team_id: data.team2_id,
+          //     wicket: { [Op.gt]: 0 } // Assuming Sequelize
+          //   }
+          // });
     
 
           // Prepare response object
@@ -147,7 +147,7 @@ module.exports = {
                 total_run: total_score,
                 total_over:await socketfunction.formatOver(total_over),
                 match_total_overs : match_detail.total_over,
-                total_wicket:total_wickets
+                // total_wicket:total_wickets
             },
           };
           return response;
