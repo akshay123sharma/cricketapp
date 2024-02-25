@@ -165,9 +165,12 @@ createMatch:async(req,res)=>{
 
 matchList:async(req,res)=>{
     try{
-        const upcoming_match_list = await helper.getAllUpcomingMatchList();
-        if(upcoming_match_list){
-            commonFunction.successMesssage(res, "Upcoming match list get successfully",upcoming_match_list);  
+        const returnArr = {};
+        returnArr['upcomingListArr'] = await helper.getAllUpcomingMatchList();
+        returnArr['currentListArr'] = await helper.getAllCurrentMatchList();
+        returnArr['completedListArr'] = await helper.getAllCompletedMatchList();
+        if(returnArr){
+            commonFunction.successMesssage(res, "Upcoming match list get successfully",returnArr);  
         }else{
             commonFunction.errorMesssage(res, "Error while get upcoming match list", []);
         }
@@ -390,10 +393,10 @@ scoreBoard: async (req, res) => {
         if(returnArr['scoreBoardBatting'].length > 0 && returnArr['scoreBoardBowler'].length > 0 ){
             commonFunction.successMesssage(res, "Score board get successfully", returnArr);
         }else{
-            commonFunction.errorMesssage(res, "No data found", []); 
+            commonFunction.errorMesssage(res, "No data found", {}); 
         }
     } catch (error) {
-        commonFunction.successMesssage(res, "Internal server errro", []);    
+        commonFunction.successMesssage(res, "Internal server errro", {});    
     }
 },
 

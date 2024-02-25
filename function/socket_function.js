@@ -7,8 +7,8 @@ var helperFunction = require("./helper");
 const Op = sequelize.Op;
 const user = db.users;
 const score_board_batting = db.score_board_batting;
-const score_board_bowling = db.score_board_bowling;
-const match = db.match;
+const score_board_bowling = db.score_board_bowlers;
+const matches = db.matches;
 module.exports = {
   playerDetail :async  (data)=> {
           try {
@@ -23,7 +23,6 @@ module.exports = {
               user.findByPk(data.bowler_id),
               await socketfunction.stikerDetail(data),
             ]);
-
             return {
               player1_name: player1Details?.name || player1Details?.mobile_number,
               player2_name: player2Details?.name || player2Details?.mobile_number,
@@ -40,6 +39,11 @@ module.exports = {
   }, 
 
   updateScore: async (data) => {
+
+          // update match status to running.
+          let updateObj = {status : 2};
+          await matches.update(updateObj, { where: { id: data.match_id } });
+  
           // Retrieve player and bowler details asynchronously
           const [playerDetail, bowlerDetail, player2_id, match_detail] = await Promise.all([
             socketfunction.playerDetailById(data),
@@ -48,16 +52,12 @@ module.exports = {
             socketfunction.matchDetail(data.match_id),
           ]);
 
-          const [
-            player1Details,
-            player2Details,
-            bowlerDetails,
-          ] = await Promise.all([
+          // player detail to send the batsman name and bowler detail in the response.
+          const [player1Details, player2Details,bowlerDetails,  ] = await Promise.all([
             user.findByPk(data.player1_id),
             user.findByPk(data.player2_id),
             user.findByPk(data.bowler_id),
           ]);
-
           // Check if the current event is an extra
           const isExtra = [8, 9, 10, 11].includes(data.type);
           // Calculate the fantasy point of batsman and bowler
@@ -109,15 +109,13 @@ module.exports = {
             socketfunction.stikerDetail(data)
           ]);   
 
-          // const total_wickets = await score_board_bowling.count({
-          //   where: {
-          //     match_id: data.match_id,
-          //     team_id: data.team2_id,
-          //     wicket: { [Op.gt]: 0 } // Assuming Sequelize
-          //   }
-          // });
-    
-
+          const total_wickets = await score_board_bowling.count({
+            where: {
+              match_id: data.match_id,
+              team_id: data.team2_id,
+              wicket: { [Op.gt]: 0 }
+            }
+          });
           // Prepare response object
           const response = {
               batsman: {
@@ -147,7 +145,7 @@ module.exports = {
                 total_run: total_score,
                 total_over:await socketfunction.formatOver(total_over),
                 match_total_overs : match_detail.total_over,
-                // total_wicket:total_wickets
+                total_wicket:total_wickets
             },
           };
           return response;

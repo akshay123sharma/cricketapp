@@ -107,6 +107,7 @@ const getAllUpcomingMatchList = async () => {
         match_time: {
           [Op.gte]: current_time
         },
+        status : 1
       },
       raw:true,
     });
@@ -127,6 +128,68 @@ const getAllUpcomingMatchList = async () => {
     return [];
   }
 };
+
+
+const getAllCurrentMatchList = async () => {
+  try {
+    const current_date = moment().format('YYYY-MM-DD');
+    const upcoming_match_list = await match.findAll({
+      where: {
+        match_date: {
+          [Op.eq]: current_date
+        },
+        status : 2
+      },
+      raw:true,
+    });
+    if (upcoming_match_list) {
+      const updatedUpcomingMatches = [];
+      for (const match of upcoming_match_list) {
+        const team1 = await teams.findByPk(match.team1_id);
+        const team2 = await teams.findByPk(match.team2_id);
+        if (team1 && team2) {
+          match.team1_name = team1.name;
+          match.team2_name = team2.name;
+          updatedUpcomingMatches.push(match);
+        }
+      }
+      return updatedUpcomingMatches;
+    }
+  } catch (error) {
+    return [];
+  }
+};
+
+const getAllCompletedMatchList = async () => {
+  try {
+    const current_date = moment().format('YYYY-MM-DD');
+    const upcoming_match_list = await match.findAll({
+      where: {
+        match_date: {
+          [Op.lt]: current_date
+        },
+        status : 3
+      },
+      raw:true,
+    });
+    if (upcoming_match_list) {
+      const updatedUpcomingMatches = [];
+      for (const match of upcoming_match_list) {
+        const team1 = await teams.findByPk(match.team1_id);
+        const team2 = await teams.findByPk(match.team2_id);
+        if (team1 && team2) {
+          match.team1_name = team1.name;
+          match.team2_name = team2.name;
+          updatedUpcomingMatches.push(match);
+        }
+      }
+      return updatedUpcomingMatches;
+    }
+  } catch (error) {
+    return [];
+  }
+};
+
 
 // when create match then when match create then it add the player in the scoreboard
 const addPlayerInScoreBoardTable = async (player_list,match_id) => {
@@ -524,6 +587,8 @@ module.exports = {
   createTeam,
   createPlayer,
   getAllUpcomingMatchList,
+  getAllCurrentMatchList,
+  getAllCompletedMatchList,
   addPlayerInScoreBoardTable,
   checkBowlerEntry,
   checkBowlerEntryOut,

@@ -63,7 +63,8 @@ module.exports = function (sequelize, DataTypes) {
       status: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        comment: "1: Upcoming, 2: Completed",
+        default:1,
+        comment: "1: Upcoming, 2: Running 3 completed",
       },
       inning_status:{
         type: DataTypes.INTEGER,
