@@ -108,7 +108,7 @@ teamList: async (req, res) => {
 },
 
 teamDetail: async (req, res) => {
-    // try {
+     try {
         const team_id = req.params.team_id;
         const teamDetailArr = await team_players.findAll({
             include: [
@@ -121,21 +121,13 @@ teamDetail: async (req, res) => {
                     ],
                     required: false,
                     as: 'user',
-                },
-                {
-                    model: score_board_batting,
-                    attributes: [
-                        "dismissal_type",
-                    ],
-                    required: false,
-                    as: 'score_board',
-                },
+                }
             ],
             where: {
                 team_id: team_id,
             },
         });
-        const teamArr = teamDetailArr.map(({ id, team_id, user_id, createdAt, updatedAt, user,score_board}) => ({
+        const teamArr = teamDetailArr.map(({ id, team_id, user_id, createdAt, updatedAt, user}) => ({
             id,
             team_id,
             user_id,
@@ -143,16 +135,15 @@ teamDetail: async (req, res) => {
             updatedAt,
             user_name: user ? user.name || null : null,
             mobile_number: user ? user.mobile_number || null : null,
-            dismissal_type: score_board ? score_board.dismissal_type || null : null,
         }));
     if(teamArr && teamArr.length>0){
          commonFunction.successMesssage(res, "Team List Get Successfully", teamArr);
     }else{
         commonFunction.successMesssage(res, "No data found", []);
     }
-    // } catch (error) {
-    //     commonFunction.errorMesssage(res, "Internal server error", {});
-    // }
+    } catch (error) {
+        commonFunction.errorMesssage(res, "Internal server error", {});
+    }
 },
 
 createMatch:async(req,res)=>{
