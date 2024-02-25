@@ -65,6 +65,11 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: true,
         comment: "1: Upcoming, 2: Completed",
       },
+      inning_status:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        comment: "1: One inning complete 2: Completed",
+      },
       team_one_json: {
         type: DataTypes.TEXT(),
         allowNull: true,

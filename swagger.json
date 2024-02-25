@@ -967,6 +967,40 @@
             }
           }
         }
+      },
+      "/inning_update": {
+        "post": {
+          "tags": ["Teams"],
+          "summary": "update the inning status on back",
+          "operationId": "inning_update",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                "name": "match_id",
+                "in": "formData",
+                "description": "match_id",
+                "required": true,
+                "type": "string"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
       }
     },
     "securityDefinitions": {
