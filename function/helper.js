@@ -166,7 +166,7 @@ const getAllCompletedMatchList = async () => {
     const upcoming_match_list = await match.findAll({
       where: {
         match_date: {
-          [Op.lt]: current_date
+          [Op.lte]: current_date
         },
         status : 3
       },
