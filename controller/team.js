@@ -372,6 +372,8 @@ outPlayer: async(req,res) => {
                 } else {
                     commonFunction.errorMesssage(res, "Error while updating the data", {});
                 }
+            }else{
+                    commonFunction.successMesssage(res, "Updated successfully", {});
             }
         } 
         // } catch (error) {
@@ -380,7 +382,7 @@ outPlayer: async(req,res) => {
 },
 
 scoreBoard: async (req, res) => {
-//  try{
+  try{
         const requestArr = req.query;
         const returnArr = {};
         returnArr['scoreBoardBatting'] = await helper.scoreBoardBatting(requestArr);
@@ -391,9 +393,9 @@ scoreBoard: async (req, res) => {
         }else{
             commonFunction.errorMesssage(res, "No data found", []); 
         }
-    // } catch (error) {
-    //     commonFunction.successMesssage(res, "Internal server errro", []);    
-    // }
+    } catch (error) {
+        commonFunction.successMesssage(res, "Internal server errro", []);    
+    }
 },
 
 maidenOver: async (req, res) => {
