@@ -48,7 +48,6 @@ module.exports = {
             socketfunction.matchDetail(data.match_id),
           ]);
 
-
           const [
             player1Details,
             player2Details,
@@ -112,13 +111,12 @@ module.exports = {
 
           const total_wickets = await score_board_bowling.count({
             where: {
-                match_id: data.match_id,
-                team_id: data.team2_id,
-                wicket: { [Op.gt]: 0 }
+              match_id: data.match_id,
+              team_id: data.team2_id,
+              wicket: { [sequelize.Op.gt]: 0 }
             }
-        });
+          });
     
-
 
           // Prepare response object
           const response = {
