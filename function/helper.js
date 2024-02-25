@@ -253,16 +253,14 @@ const scoreBoardBatting = async(dataArr) => {
                     "(SELECT CASE WHEN name IS NOT NULL THEN name ELSE mobile_number END FROM users WHERE id = `score_board_batting`.`player_id` ORDER BY id DESC LIMIT 1)"
                 ),
                 "player_name",
-            ],
+              ],
             
               [
                 sequelize.literal(
                     "(SELECT CASE WHEN name IS NOT NULL THEN name ELSE mobile_number END FROM users WHERE id = `score_board_batting`.`bowler_id` ORDER BY id DESC LIMIT 1)"
                 ),
                 "bowler_name",
-            ],
-            
-
+              ],
               [
                 sequelize.literal(
                     "(SELECT CASE WHEN name IS NOT NULL THEN name ELSE mobile_number END FROM users WHERE id = `score_board_batting`.`fielder_id` ORDER BY id DESC LIMIT 1)"
