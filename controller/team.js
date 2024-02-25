@@ -122,12 +122,20 @@ teamDetail: async (req, res) => {
                     required: false,
                     as: 'user',
                 },
+                {
+                    model: score_board_batting,
+                    attributes: [
+                        "dismissal_type",
+                    ],
+                    required: false,
+                    as: 'score_board',
+                },
             ],
             where: {
                 team_id: team_id,
             },
         });
-        const teamArr = teamDetailArr.map(({ id, team_id, user_id, createdAt, updatedAt, user }) => ({
+        const teamArr = teamDetailArr.map(({ id, team_id, user_id, createdAt, updatedAt, user,score_board}) => ({
             id,
             team_id,
             user_id,
@@ -135,6 +143,7 @@ teamDetail: async (req, res) => {
             updatedAt,
             user_name: user ? user.name || null : null,
             mobile_number: user ? user.mobile_number || null : null,
+            dismissal_type: score_board ? score_board.dismissal_type || null : null,
         }));
     if(teamArr && teamArr.length>0){
          commonFunction.successMesssage(res, "Team List Get Successfully", teamArr);
@@ -348,7 +357,6 @@ outPlayer: async(req,res) => {
                 wicket: checkBowlerEntry.wicket + 1,
                 balls: checkBowlerEntry.balls + 1,
             };
-
             // if user run out and retired hurt  then no wicket added on bowler count
             if(requestArr.dismissal_type != 6 && requestArr.dismissal_type !=8){
                 const updateOutDetail = await score_board_bowling.update(updateBowler, {
