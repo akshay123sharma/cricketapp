@@ -108,7 +108,7 @@ teamList: async (req, res) => {
 },
 
 teamDetail: async (req, res) => {
-    try {
+    // try {
         const team_id = req.params.team_id;
         const teamDetailArr = await team_players.findAll({
             include: [
@@ -150,9 +150,9 @@ teamDetail: async (req, res) => {
     }else{
         commonFunction.successMesssage(res, "No data found", []);
     }
-    } catch (error) {
-        commonFunction.errorMesssage(res, "Internal server error", {});
-    }
+    // } catch (error) {
+    //     commonFunction.errorMesssage(res, "Internal server error", {});
+    // }
 },
 
 createMatch:async(req,res)=>{
