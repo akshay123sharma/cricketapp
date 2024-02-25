@@ -110,10 +110,14 @@ module.exports = {
             socketfunction.stikerDetail(data)
           ]);   
 
-        //   extras.sum('count', {
-        //     where: { team_id: data.team_id, match_id: data.match_id }
-        // })
-
+          const total_wickets = await score_board_bowling.count('wicket', {
+            where: {
+                match_id: data.match_id,
+                team_id: data.team2_id,
+                wicket: { [Op.gt]: 0 }
+            }
+        });
+    
 
 
           // Prepare response object
@@ -144,7 +148,8 @@ module.exports = {
               scores: {
                 total_run: total_score,
                 total_over:await socketfunction.formatOver(total_over),
-                match_total_overs : match_detail.total_over
+                match_total_overs : match_detail.total_over,
+                total_wicket:total_wickets
             },
           };
           return response;
