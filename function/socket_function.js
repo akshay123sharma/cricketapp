@@ -46,7 +46,25 @@ module.exports = {
             socketfunction.bowlerDetailById(data),
             socketfunction.playerTwoDetailById(data),
             socketfunction.matchDetail(data.match_id),
-        ]);
+          ]);
+
+
+          const [
+            player1Details,
+            player2Details,
+            bowlerDetails,
+          ] = await Promise.all([
+            user.findByPk(data.player1_id),
+            user.findByPk(data.player2_id),
+            user.findByPk(data.bowler_id),
+            await socketfunction.stikerDetail(data),
+          ]);
+
+
+
+
+
+
           // Check if the current event is an extra
           const isExtra = [8, 9, 10, 11].includes(data.type);
           // Calculate the fantasy point of batsman and bowler
@@ -76,11 +94,7 @@ module.exports = {
             runs: bowlerDetail.runs + data.run,
             economy: ((bowlerDetail.runs + data.run) / (bowlerDetail.balls + 1)) * 6,
           };
-
           const bowlerFantasyPoint = { fantasy_points : bowler_fantasy_points};
-
-
-          console.log(bowlerFantasyPoint,"AKSHAY SHARMA===============")
           const conditionBatsmanObj = { match_id: data.match_id, team_id: data.team_id };
           const conditionBolwerObj = { match_id: data.match_id, team_id: data.team2_id };
           // Update batsman score if it's not an extra event
@@ -108,11 +122,13 @@ module.exports = {
                   id: playerDetail.player_id,
                   run: isExtra ? playerDetail.run : playerDetail.run + data.run,
                   balls: playerDetail.balls + 1,
+                  name:player1Details?.name || player1Details?.mobile_number,
               },
               batsman_2: {
                 id: player2_id.player_id,
                 run: player2_id.run,
                 balls: player2_id.balls,
+                name:player2Details?.name || player2Details?.mobile_number,
               },
               bowler: {
                   id: bowlerDetail.player_id,
@@ -120,6 +136,7 @@ module.exports = {
                   runs: bowlerObj.runs,
                   wicket: bowlerDetail.wicket,
                   mainders_over: bowlerDetail.mainders_over,
+                  name:bowlerDetails?.name || bowlerDetails?.mobile_number,
               },
               striker: {
                   is_striker: strikerDetail.player_id,
