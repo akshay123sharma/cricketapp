@@ -28,6 +28,6 @@ module.exports = function (app) {
     app.route("/apis/score_board").get(verifyTokenMiddleware,teamModule.scoreBoard);
     app.route("/apis/maiden_over").post(verifyTokenMiddleware,teamModule.maidenOver);
     app.route("/apis/out_player_list").get(verifyTokenMiddleware,teamModule.outPlayerList);
-    app.route("/apis/inning_update").post(teamModule.inningUpdate);
+    app.route("/apis/inning_update").post(verifyTokenMiddleware,teamModule.inningUpdate);
 
 };
