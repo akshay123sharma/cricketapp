@@ -1,9 +1,7 @@
 const userModule = require("../controller/login");
 const teamModule = require("../controller/team");
-
+const contestModule = require("../controller/contest");
 const jwtMiddleware = require("../function/middleware");
-
-
 const verifyTokenMiddleware = (req, res, next) => {
     jwtMiddleware.verifyToken(req, res, next);
 };
@@ -28,7 +26,11 @@ module.exports = function (app) {
     app.route("/apis/score_board").get(verifyTokenMiddleware,teamModule.scoreBoard);
     app.route("/apis/maiden_over").post(verifyTokenMiddleware,teamModule.maidenOver);
     app.route("/apis/out_player_list").get(verifyTokenMiddleware,teamModule.outPlayerList);
-    app.route("/apis/inning_update").post(teamModule.inningUpdate);
+    app.route("/apis/inning_update").post(verifyTokenMiddleware,teamModule.inningUpdate);
     app.route("/apis/next_batsman").post(verifyTokenMiddleware,teamModule.nextBatsman);
+    app.route("/apis/create_contest").post(verifyTokenMiddleware,contestModule.createContest);
+    app.route("/apis/contest_list/:match_id").get(contestModule.contestList);
+
+
 
 };

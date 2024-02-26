@@ -15,6 +15,10 @@
       {
         "name": "Teams",
         "description": "Team Operations"
+      },
+      {
+        "name": "Contests",
+        "description": "Contests Operations"
       }
     ],
     "paths": {
@@ -1047,6 +1051,95 @@
           "responses": {
             "200": {
               "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/create_contest": {
+        "post": {
+          "tags": ["Contests"],
+          "summary": "Add contests",
+          "operationId": "create_contest",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                "name": "match_id",
+                "in": "formData",
+                "description": "match_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "entry_fee",
+                "in": "formData",
+                "description": "entry_fee (Add validation that value not less than 5)",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "total_participants",
+                "in": "formData",
+                "description": "total_participants(add validation that value greater than 2)",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "number_of_winners",
+                "in": "formData",
+                "description": "number_of_winners(please auto fill this with the formula [total_participants /2 but 1.5 value goes to 1 not 2] And also add a note after inout that the no of winners will calucated auto and if you need to chnage then can change .)",
+                "required": true,
+                "type": "string"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/contest_list/{match_id}": {
+        "get": {
+          "tags": ["Contests"],
+          "summary": "Get contest list for particular match",
+          "operationId": "team_detail",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "match_id",
+              "in": "path",
+              "description": "Enter your match id",
+              "required": true,
+              "type": "number"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "data get  Successfully",
               "schema": {
                 "type": "string"
               }

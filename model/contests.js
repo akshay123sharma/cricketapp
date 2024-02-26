@@ -21,7 +21,16 @@ module.exports = function (sequelize, DataTypes) {
       total_participants: {
         type: DataTypes.INTEGER,
         allowNull: true,
-      }
+      },
+      number_of_winners: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      prize_pool: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      
     },
     {
       sequelize,
