@@ -465,7 +465,7 @@ outPlayerList: async(req,res) =>{
         });
 
         let updateObj ={};
-        if(match_detail.inning_status == 0){
+        if(match_detail.inning_status == 0 || match_detail.inning_status == NULL ){
             updateObj = {
                 inning_status: 1,
                 match_result : 0
