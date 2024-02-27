@@ -411,9 +411,10 @@ const dismissalUpdate = async(requestArr) => {
       };
        await score_board_batting.update(updateDetail, {
           where: {
-              match_id: requestArr.match_id,
-              team_id: requestArr.team_id,
-              player_id: requestArr.player_id,
+              match_id : requestArr.match_id,
+              team_id : requestArr.team_id,
+              player_id : requestArr.player_id,
+              is_stricker : 0,
           },
       });
       
