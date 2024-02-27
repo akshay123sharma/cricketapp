@@ -341,11 +341,13 @@ outPlayer: async(req,res) => {
             let _update_player_fantasy = {};
             //  here manage the other bowler  case that point added too that particular bowler.
             const fielder_detail = await helper.getFielderDetail(requestArr);
-            if(_match_detail.total_over <= 10){
-                _update_player_fantasy = await helper.updateFielderFantasyT10(requestArr,fielder_detail);
-            }else{
-                _update_player_fantasy = await helper.updateFielderFantasyT20(requestArr,fielder_detail);
-            } 
+            if(fielder_detail){
+                if(_match_detail.total_over <= 10){
+                    _update_player_fantasy = await helper.updateFielderFantasyT10(requestArr,fielder_detail);
+                }else{
+                    _update_player_fantasy = await helper.updateFielderFantasyT20(requestArr,fielder_detail);
+                } 
+            }
             const checkBowlerEntry = await helper.checkBowlerEntryOut(requestArr);
             const updateBowler = {
                 wicket: checkBowlerEntry.wicket + 1,
