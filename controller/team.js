@@ -474,6 +474,7 @@ outPlayerList: async(req,res) =>{
         }else{
             updateObj = {
                 inning_status : 2,
+                status : 3,
                 match_result : requestArr.match_result
             }
         }
