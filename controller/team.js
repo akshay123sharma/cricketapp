@@ -456,7 +456,7 @@ outPlayerList: async(req,res) =>{
   },
 
   inningUpdate : async(req,res)=>{
-     try{
+    //  try{
         const requestArr =  req.body;
         const match_detail = await matches.findOne({
             where:{
@@ -486,9 +486,9 @@ outPlayerList: async(req,res) =>{
         }else{
             commonFunction.errorMesssage(res, "Error while updatign the data", {});
         }
-    } catch (error) {
-        commonFunction.successMesssage(res, "Internal server errro", []);    
-    }
+    // } catch (error) {
+    //     commonFunction.successMesssage(res, "Internal server errro", []);    
+    // }
   },
 
 
