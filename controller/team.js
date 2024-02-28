@@ -220,15 +220,15 @@ selectPlayers: async(req,res)=>{
     try{
         const requestArr = req.body;
         if(requestArr.type == 1) {
-            const resetStrikerObj = {
-                is_stricker: 0
-            };
-            await score_board_batting.update(resetStrikerObj, {
-                where: {
-                    match_id: requestArr.match_id,
-                    team_id: requestArr.team_id,
-                },
-            });
+            // const resetStrikerObj = {
+            //     is_stricker: 0
+            // };
+            // await score_board_batting.update(resetStrikerObj, {
+            //     where: {
+            //         match_id: requestArr.match_id,
+            //         team_id: requestArr.team_id,
+            //     },
+            // });
             let playerObj = {
                 position : requestArr.position,
                 is_stricker: requestArr.is_stricker
