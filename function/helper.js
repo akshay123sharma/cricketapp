@@ -414,7 +414,6 @@ const dismissalUpdate = async(requestArr) => {
               match_id : requestArr.match_id,
               team_id : requestArr.team_id,
               player_id : requestArr.player_id,
-              is_stricker : 0,
           },
       });
       
