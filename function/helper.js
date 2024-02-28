@@ -109,6 +109,7 @@ const getAllUpcomingMatchList = async () => {
         },
         status : 1
       },
+      order: [['id', 'DESC']],
       raw:true,
     });
     if (upcoming_match_list) {
@@ -140,6 +141,7 @@ const getAllCurrentMatchList = async () => {
         },
         status : 2
       },
+      order: [['id', 'DESC']],
       raw:true,
     });
     if (upcoming_match_list) {
@@ -170,6 +172,7 @@ const getAllCompletedMatchList = async () => {
         },
         status : 3
       },
+      order: [['id', 'DESC']],
       raw:true,
     });
     if (upcoming_match_list) {
