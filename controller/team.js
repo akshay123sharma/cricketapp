@@ -377,6 +377,16 @@ outPlayer: async(req,res) => {
                     commonFunction.errorMesssage(res, "Error while updating the data", {});
                 }
             }else{
+                const updateBowler = {
+                    wicket: checkBowlerEntry.wicket + 1,
+                };
+                const updateOutDetail = await score_board_bowling.update(updateBowler, {
+                    where: {
+                        match_id: requestArr.match_id,
+                        team_id: requestArr.team2_id,
+                        player_id: requestArr.bowler_id,
+                    },
+                });
                     commonFunction.successMesssage(res, "Updated successfully", {});
             }
         } 
