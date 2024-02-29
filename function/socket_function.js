@@ -109,11 +109,11 @@ module.exports = {
             socketfunction.stikerDetail(data)
           ]);   
 
-          const total_wickets = await score_board_bowling.count({
+          const total_wickets = await score_board_batting.count({
             where: {
               match_id: data.match_id,
-              team_id: data.team2_id,
-              wicket: { [Op.gt]: 0 }
+              team_id: data.team_id,
+              dismissal_type: { [Op.gt]: 0 }
             }
           });
           // Prepare response object

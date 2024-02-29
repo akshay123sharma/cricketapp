@@ -333,7 +333,7 @@ changeStricker: async (req, res) => {
 },
 
 outPlayer: async(req,res) => {
-    // try{
+     try{
         const requestArr = req.body;
         const _match_detail = await matches.findByPk(requestArr.match_id);
         const update_dismissal = await helper.dismissalUpdate(requestArr);
@@ -380,9 +380,9 @@ outPlayer: async(req,res) => {
                     commonFunction.successMesssage(res, "Updated successfully", {});
             }
         } 
-        // } catch (error) {
-        //     commonFunction.successMesssage(res, "Internal server error", {});    
-        // }
+        } catch (error) {
+            commonFunction.successMesssage(res, "Internal server error", {});    
+        }
 },
 
 scoreBoard: async (req, res) => {
@@ -466,12 +466,11 @@ outPlayerList: async(req,res) =>{
 
         let updateObj ={};
         if(match_detail.inning_status === 0 || match_detail.inning_status === null){
-            console.log("===================")
             updateObj = {
                 inning_status: 1,
                 match_result : 0
             };
-        }else{
+        } else {
             updateObj = {
                 inning_status : 2,
                 status : 3,
