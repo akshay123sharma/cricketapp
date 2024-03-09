@@ -466,7 +466,7 @@ outPlayerList: async(req,res) =>{
   },
 
   inningUpdate : async(req,res)=>{
-    //  try{
+      try{
         const requestArr =  req.body;
         const match_detail = await matches.findOne({
             where:{
@@ -497,9 +497,9 @@ outPlayerList: async(req,res) =>{
         }else{
             commonFunction.errorMesssage(res, "Error while updatign the data", {});
         }
-    // } catch (error) {
-    //     commonFunction.successMesssage(res, "Internal server errro", []);    
-    // }
+    } catch (error) {
+        commonFunction.successMesssage(res, "Internal server errro", []);    
+    }
   },
 
 
@@ -532,5 +532,35 @@ outPlayerList: async(req,res) =>{
     }catch(error){
             commonFunction.errorMesssage(res, "Internal server error ",{});
     }
-  }
+  },
+
+  matchDetail: async(req,res)=> {
+        try{
+            const match_id = req.params.match_id;
+            const matchDetailArr = await matches.findOne({
+                where:{
+                    id:match_id
+                },
+                raw:true,
+            });
+            if(matchDetailArr){
+                matchDetailArr.playerList = JSON.parse(matchDetailArr.player_list);
+                for (let i = 0; i < matchDetailArr.playerList.length; i++) {
+                    const player_id = matchDetailArr.playerList[i].player_id;
+                    const team_id  = matchDetailArr.playerList[i].team_id;
+                    const player = await helper.userDetailById(player_id);
+                    const team = await helper.teamNameById(team_id);
+                    if (player.name !== null && player.name !== undefined) {
+                        matchDetailArr.playerList[i].player_name = player.name;
+                    } else {
+                        matchDetailArr.playerList[i].player_name = player.mobile_number;
+                    }
+                    matchDetailArr.playerList[i].team_name = team.name;
+                }
+            }
+            commonFunction.successMesssage(res, "Record Updated successfully", matchDetailArr);
+        }catch(error){
+            commonFunction.errorMesssage(res, "Internal server error ",{});
+        }
+    }
 }

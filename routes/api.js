@@ -28,8 +28,17 @@ module.exports = function (app) {
     app.route("/apis/out_player_list").get(verifyTokenMiddleware,teamModule.outPlayerList);
     app.route("/apis/inning_update").post(verifyTokenMiddleware,teamModule.inningUpdate);
     app.route("/apis/next_batsman").post(verifyTokenMiddleware,teamModule.nextBatsman);
+    app.route("/apis/match_detail/:match_id").get(verifyTokenMiddleware,teamModule.matchDetail);
+
     app.route("/apis/create_contest").post(verifyTokenMiddleware,contestModule.createContest);
-    app.route("/apis/contest_list/:match_id").get(contestModule.contestList);
+    app.route("/apis/contest_list/:match_id").get(verifyTokenMiddleware,contestModule.contestList);
+    app.route("/apis/replicate_contest").post(verifyTokenMiddleware,contestModule.replicateContest);
+    app.route("/apis/create_contest_team").post(verifyTokenMiddleware,contestModule.createContestTeam);
+    app.route("/apis/contest_detail/:contest_id").get(verifyTokenMiddleware,contestModule.contestDetail);
+    app.route("/apis/user_contest").get(verifyTokenMiddleware,contestModule.userContest);
+
+
+
 
 
 

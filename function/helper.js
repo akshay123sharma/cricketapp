@@ -580,7 +580,50 @@ const updateFielderFantasyT20 = async (requestArr,fielder_detail) => {
 return true;
 
 };
+/* Get user detail by id   */
+const userDetailById = async(id) => {
+  const userDataObj = await user.findOne({
+      where: {
+        id: id,
+      },
+      raw:true,
+  });
+  return userDataObj;
+};
 
+const teamNameById = async(id) => {
+  const teamDataObj = await teams.findOne({
+      where: {
+        id: id,
+      },
+      raw:true,
+  });
+  return teamDataObj;
+};
+
+const contestPlayerList = async(contest_id) => {
+    const playerListArr= await contest_teams.findAll({
+      attributes: [
+          'id',
+          'match_id',
+          'contest_id',
+          'user_id',
+          'createdAt',
+          'updatedAt',
+          [
+            sequelize.literal(
+                "(SELECT CASE WHEN name IS NOT NULL THEN name ELSE mobile_number END FROM users WHERE id = `contest_teams`.`user_id` ORDER BY id DESC LIMIT 1)"
+            ),
+            "user_name",
+          ],
+        
+      ],
+      where:{
+          contest_id: contest_id
+      }
+  });
+  return playerListArr;
+}
 
 module.exports = {
   createUser,
@@ -607,5 +650,8 @@ module.exports = {
   updateBowlerFantasyT20,
   getFielderDetail,
   updateFielderFantasyT10,
-  updateFielderFantasyT20
+  updateFielderFantasyT20,
+  userDetailById,
+  teamNameById,
+  contestPlayerList
 };

@@ -13,31 +13,37 @@ const match = db.matches;
 const score_board_batting = db.score_board_batting;
 const score_board_bowling = db.score_board_bowlers;
 const contests = db.contests;
-const platform_fees = 1;
+const contest_teams = db.contest_teams;
 
-// contests.belongsTo(match, {
-//     foreignKey: "match_id",
-// });
+
+contest_teams.belongsTo(user, {
+    foreignKey: "user_id",
+});
 
 
 module.exports = {
     createContest: async (req, res) => {
         try {
-           const requestArr = req.body;
-            let pool_price =  requestArr.entry_fee * requestArr.total_participants;
-            let _platform_fees = requestArr.total_participants * platform_fees;
-            requestArr.prize_pool = parseFloat(pool_price - _platform_fees);
-            // requestArr.number_of_winners = Math.floor(requestArr.total_participants / 2);
-           const create_contest = await contests.create(requestArr);
-           if (create_contest) {
-                 commonFunction.successMesssage(res, "Contest created successfully", {});
-           }else{
-                 commonFunction.errorMesssage(res, "Error while creating contest", {});
-           } 
-       } catch (error) {
-           commonFunction.successMesssage(res, "Error while contest created", {}); 
-       }
-   },
+            let requestArr = req.body;
+            const entryFeesArr = ['19', '49', '89', '179', '299', '525','27','77','230','380','5','100','150','170','300'];
+            const memberArr    = ['4', '4', '4', '4', '4', '4','3','3','3','3','1000','20','36','370','40'];
+            const prizePoolArr = ['70', '170', '300', '620', '1020', '1800','70','200','600','1020','4500','1680','4900','55000','9999'];
+            for (let i = 0; i < entryFeesArr.length; i++) {
+                const contest = {
+                    entry_fee: entryFeesArr[i],
+                    total_participants: memberArr[i],
+                    prize_pool: prizePoolArr[i],
+                    number_of_winners: 1,
+                    match_id:requestArr.match_id
+                };
+                await contests.create(contest);
+            }
+            commonFunction.successMesssage(res, "Contests created successfully", {});
+        } catch (error) {
+            commonFunction.errorMesssage(res, "Error while creating contests", {});
+        }
+    },
+    
 
    contestList: async(req,res) => {
     try {
@@ -45,18 +51,168 @@ module.exports = {
         const contestArr = await contests.findAll({
             where:{
                 match_id:match_id
-            }
+            },
+            raw:true,
         });
         if (contestArr) {
+            for (const contest of contestArr) {
+                const count = await contest_teams.count({
+                    where: {
+                        contest_id: contest.id,
+                        match_id: contest.match_id
+                    },
+                    raw:true,
+                });
+                contest.count = count;
+            }
             commonFunction.successMesssage(res, "Contest get successfully", contestArr);
         }else{
                 commonFunction.errorMesssage(res, "No data", []);
         } 
     } catch (error) {
-        commonFunction.successMesssage(res, "Error while contest created", {}); 
+        commonFunction.errorMesssage(res, "Error while contest created", []); 
     }   
-    
-   }
-  
+   },
+
+   replicateContest:async(req,res)=>{
+    try {
+        const requestArr = req.body;
+        const getContest = await contests.findOne({
+            where:{
+                id:requestArr.contest_id
+            },
+            raw:true
+        });
+        if(getContest){
+            let contestObj = {
+                match_id:getContest.match_id,
+                entry_fee:getContest.entry_fee,
+                total_participants:getContest.total_participants,
+                number_of_winners:getContest.number_of_winners,
+                prize_pool:getContest.prize_pool
+            };
+            const replicate_contest = await contests.create(contestObj);
+            if (replicate_contest) {
+                commonFunction.successMesssage(res, "Contest created successfully", {});
+            }else{
+                commonFunction.errorMesssage(res, "Error while replicate contest", {});
+            }
+        }
+    } catch (error) {
+        commonFunction.errorMesssage(res, "Error while contest created", []); 
+    }
+   },
+
+
+   createContestTeam:async(req,res)=>{
+    try {
+        const requestArr = req.body;
+        const create_team = await contest_teams.create(requestArr);
+        if(create_team){
+            commonFunction.successMesssage(res, "Team created successfully", {});
+        }else{
+            commonFunction.errorMesssage(res, "Error while creating team", {});
+        }
+    } catch (error) {
+        commonFunction.errorMesssage(res, "Error while contest created", {}); 
+    }
+ },
+
+
+ contestDetail: async(req,res)=>{
+    try {
+        const contest_id = req.params.contest_id;
+        const contestDetail = await contests.findOne({
+            where:{
+                id:contest_id
+            },
+            raw:true,
+        });
+        if(contestDetail){
+            contestDetail.player = await helper.contestPlayerList(contest_id);
+            commonFunction.successMesssage(res, "Contest detail get successfully", contestDetail);
+        }else{
+            commonFunction.errorMesssage(res, "Error while creating team", []);
+
+        }
+    } catch (error) {
+        commonFunction.errorMesssage(res, "Error while contest created", {}); 
+    }
+},
+
+
+userContest: async (req, res) => {
+    try {
+        const requestArr = req.body;
+        const create_team = await contest_teams.create(requestArr);
+        if(create_team){
+            commonFunction.successMesssage(res, "Team created successfully", {});
+        }else{
+            commonFunction.errorMesssage(res, "Error while creating team", {});
+        }
+    } catch (error) {
+        commonFunction.errorMesssage(res, "Error while contest created", {}); 
+    }
+ },
+
+
+ contestDetail: async(req,res)=>{
+    try {
+        const contest_id = req.params.contest_id;
+        const contestDetail = await contests.findOne({
+            where:{
+                id:contest_id
+            },
+            raw:true,
+        });
+        if(contestDetail){
+            contestDetail.player = await helper.contestPlayerList(contest_id);
+            commonFunction.successMesssage(res, "Contest detail get successfully", contestDetail);
+        }else{
+            commonFunction.errorMesssage(res, "Error while creating team", []);
+
+        }
+    } catch (error) {
+        commonFunction.errorMesssage(res, "Error while contest created", {}); 
+    }
+},
+
+
+userContest: async (req, res) => {
+    try {
+        const matchId = req.query.match_id;
+        const user_id = req.query.user_id;
+        const userContests = await contest_teams.findAll({
+            where: {
+                match_id: matchId,
+                user_id:user_id
+            },
+            raw:true
+        });
+
+        if (userContests.length > 0) {
+            for (let i = 0; i < userContests.length; i++) {
+                userContests[i].player_list = JSON.parse(userContests[i].selected_team);
+                for (let j = 0; j < userContests[i].player_list.length; j++) {
+                    const playerId = userContests[i].player_list[j].player_id;
+                    const teamId = userContests[i].player_list[j].team_id;
+                    const player = await user.findByPk(playerId);
+                    const team = await teams.findByPk(teamId);
+                    if (player.name !== null && player.name !== undefined) {
+                        userContests[i].player_list[j].player_name = player.name;
+                    } else {
+                        userContests[i].player_list[j].player_name = player.mobile_number;
+                    }
+                    userContests[i].player_list[j].team_name = team ? team.name : "";
+                }
+            }
+            commonFunction.successMesssage(res, "Contest  get successfully", userContests);
+        }else{
+            commonFunction.errorMesssage(res, "No data", []);
+        }
+    } catch (error) {
+        commonFunction.errorMesssage(res, "Error while contest created", {}); 
+    }
+}
 
 };

@@ -1080,27 +1080,6 @@
                 "description": "match_id",
                 "required": true,
                 "type": "string"
-              },
-              {
-                "name": "entry_fee",
-                "in": "formData",
-                "description": "entry_fee (Add validation that value not less than 5)",
-                "required": true,
-                "type": "string"
-              },
-              {
-                "name": "total_participants",
-                "in": "formData",
-                "description": "total_participants(add validation that value greater than 2)",
-                "required": true,
-                "type": "string"
-              },
-              {
-                "name": "number_of_winners",
-                "in": "formData",
-                "description": "number_of_winners(please auto fill this with the formula [total_participants /2 but 1.5 value goes to 1 not 2] And also add a note after inout that the no of winners will calucated auto and if you need to chnage then can change .)",
-                "required": true,
-                "type": "string"
               }
           ],
           "responses": {
@@ -1140,6 +1119,204 @@
           "responses": {
             "200": {
               "description": "data get  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/match_detail/{match_id}": {
+        "get": {
+          "tags": ["Teams"],
+          "summary": "Get match details",
+          "operationId": "match_detail",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "match_id",
+              "in": "path",
+              "description": "Enter your match id",
+              "required": true,
+              "type": "number"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Data get  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/replicate_contest": {
+        "post": {
+          "tags": ["Contests"],
+          "summary": "Replicate contests",
+          "operationId": "replicate_contest",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                "name": "contest_id",
+                "in": "formData",
+                "description": "contest_id",
+                "required": true,
+                "type": "string"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/create_contest_team": {
+        "post": {
+          "tags": ["Contests"],
+          "summary": "Create contest team",
+          "operationId": "create_contest_team",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                "name": "user_id",
+                "in": "formData",
+                "description": "user_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "contest_id",
+                "in": "formData",
+                "description": "contest_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "match_id",
+                "in": "formData",
+                "description": "match_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "selected_team",
+                "in": "formData",
+                "description": "selected_team(user team json array here)",
+                "required": true,
+                "type": "string"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/contest_detail/{contest_id}": {
+        "get": {
+          "tags": ["Contests"],
+          "summary": "Get contest details",
+          "operationId": "contest_detail",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "contest_id",
+              "in": "path",
+              "description": "Enter your contest id",
+              "required": true,
+              "type": "number"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Data get  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/user_contest": {
+        "get": {
+          "tags": ["Contests"],
+          "summary": "Get user contest and team  list",
+          "operationId": "user_contest",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "match_id",
+              "in": "query",
+              "description": "match_id",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "user_id",
+              "in": "query",
+              "description": "user_id",
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
               "schema": {
                 "type": "string"
               }
