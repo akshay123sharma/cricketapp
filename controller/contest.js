@@ -157,7 +157,7 @@ userContest: async (req, res) => {
 
 
  contestDetail: async(req,res)=>{
-    // try {
+     try {
         const contest_id = req.params.contest_id;
         const contestDetail = await contests.findOne({
             where:{
@@ -172,9 +172,9 @@ userContest: async (req, res) => {
             commonFunction.errorMesssage(res, "Error while creating team", []);
 
         }
-    // } catch (error) {
-    //     commonFunction.errorMesssage(res, "Error while contest created", {}); 
-    // }
+    } catch (error) {
+        commonFunction.errorMesssage(res, "Error while contest created", {}); 
+    }
 },
 
 

@@ -545,6 +545,10 @@ outPlayerList: async(req,res) =>{
             });
             if(matchDetailArr){
                 matchDetailArr.playerList = JSON.parse(matchDetailArr.player_list);
+                const team_one = await helper.teamNameById(team1_id);
+                matchDetailArr.team_one = team_one.name;
+                const team_two = await helper.teamNameById(team2_id);
+                matchDetailArr.team_two = team_two.name;
                 for (let i = 0; i < matchDetailArr.playerList.length; i++) {
                     const player_id = matchDetailArr.playerList[i].player_id;
                     const team_id  = matchDetailArr.playerList[i].team_id;
