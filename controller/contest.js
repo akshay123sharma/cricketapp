@@ -120,8 +120,8 @@ module.exports = {
 
 
  contestDetail: async(req,res)=>{
-    try {
-        const contest_id = req.params.contest_id;
+     try {
+        const contest_id = req.query.contest_id;
         const contestDetail = await contests.findOne({
             where:{
                 id:contest_id
@@ -132,11 +132,11 @@ module.exports = {
             contestDetail.player = await helper.contestPlayerList(contest_id);
             commonFunction.successMesssage(res, "Contest detail get successfully", contestDetail);
         }else{
-            commonFunction.errorMesssage(res, "Error while creating team", []);
+            commonFunction.errorMesssage(res, "No data found", []);
 
         }
     } catch (error) {
-        commonFunction.errorMesssage(res, "Error while contest created", {}); 
+        commonFunction.errorMesssage(res, "Error while getting contest detail", {}); 
     }
 },
 
