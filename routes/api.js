@@ -36,6 +36,7 @@ module.exports = function (app) {
     app.route("/apis/create_contest_team").post(verifyTokenMiddleware,contestModule.createContestTeam);
     app.route("/apis/contest_detail/:contest_id").get(verifyTokenMiddleware,contestModule.contestDetail);
     app.route("/apis/user_contest").get(verifyTokenMiddleware,contestModule.userContest);
+    // app.route("/apis/user_team/:user_id").get(verifyTokenMiddleware,contestModule.userContest);
 
 
 

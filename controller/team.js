@@ -154,7 +154,7 @@ createMatch:async(req,res)=>{
         if(create_match){
             let match_id = create_match.id;
             await helper.addPlayerInScoreBoardTable(player_list,match_id);
-            commonFunction.successMesssage(res, "Match created Successfully", {});  
+            commonFunction.successMesssage(res, "Match created Successfully", create_match);  
         }else{
             commonFunction.errorMesssage(res, "Error while match created", {});
         }
