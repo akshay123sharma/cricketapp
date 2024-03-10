@@ -102,17 +102,24 @@ const getAllUpcomingMatchList = async () => {
     const current_time = moment().format('HH:mm');
     const upcoming_match_list = await match.findAll({
       where: {
-        match_date: {
-          [Op.gte]: current_date
-        },
-        match_time: {
-          [Op.gte]: current_time
-        },
-        status : 1
+        [Op.or]: [
+          {
+            match_date: {
+              [Op.gt]: current_date
+            }
+          },
+          {
+            match_date: current_date,
+            match_time: {
+              [Op.gte]: current_time
+            }
+          }
+        ],
+        status: 1
       },
       order: [['id', 'DESC']],
-      raw:true,
-    });
+      raw: true
+    });    
     if (upcoming_match_list) {
       const updatedUpcomingMatches = [];
       for (const match of upcoming_match_list) {
