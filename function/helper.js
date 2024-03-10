@@ -9,6 +9,7 @@ const match = db.matches;
 const score_board_batting = db.score_board_batting;
 const score_board_bowling = db.score_board_bowlers;
 const extras = db.extras;
+const contest_teams = db.contest_teams;
 var socketfunction = require("./socket_common");
 /* Create user   */
 
