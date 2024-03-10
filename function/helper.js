@@ -623,7 +623,20 @@ const contestPlayerList = async(contest_id) => {
       }
   });
   return playerListArr;
-}
+};
+
+const playerFantasyPoints = async(player_id) => {
+  const playerPointsObj = await score_board_batting.findOne({
+      where: {
+        player_id: player_id,
+      },
+      raw:true,
+  });
+  return playerPointsObj;
+};
+
+
+
 
 module.exports = {
   createUser,
@@ -653,5 +666,6 @@ module.exports = {
   updateFielderFantasyT20,
   userDetailById,
   teamNameById,
-  contestPlayerList
+  contestPlayerList,
+  playerFantasyPoints
 };

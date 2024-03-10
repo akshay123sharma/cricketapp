@@ -213,6 +213,48 @@ userContest: async (req, res) => {
     } catch (error) {
         commonFunction.errorMesssage(res, "Error while contest created", {}); 
     }
+},
+
+userTeamDetail:async(req,res) => {
+    const contest_id = req.query.contest_id;
+    const user_id = req.query.user_id;
+    const userContests = await contest_teams.findOne({
+        where: {
+            contest_id: contest_id,
+            user_id:user_id
+        },
+        raw:true
+    });
+    if(userContests){
+        userContests.selected_team = JSON.parse(userContests.selected_team);
+        for (let i = 0; i < userContests.selected_team.length; i++) {
+            const player_id = userContests.selected_team[i].player_id;
+            const team_id  = userContests.selected_team[i].team_id;
+            const player = await helper.userDetailById(player_id);
+            const team = await helper.teamNameById(team_id);
+            const fantasy_points = await helper.playerFantasyPoints(player_id);
+            if (player.name !== null && player.name !== undefined) {
+                userContests.selected_team[i].player_name = player.name;
+            } else {
+                userContests.selected_team[i].player_name = player.mobile_number;
+            }
+            userContests.selected_team[i].team_name = team.name;
+            if(selected_team[i].is_caption){
+                userContests.selected_team[i].points = fantasy_points.fantasy_points * 2;
+            }else{
+                userContests.selected_team[i].points = fantasy_points.fantasy_points;
+            }
+
+            if(selected_team[i].is_vice_caption){
+                userContests.selected_team[i].points = fantasy_points.fantasy_points * 1.5;
+            }else{
+                userContests.selected_team[i].points = fantasy_points.fantasy_points;
+            }
+        }
+        commonFunction.successMesssage(res, "User team get successfully", userContests);
+    }else{
+        commonFunction.errorMesssage(res, "No data found", {});
+    }
 }
 
 };
