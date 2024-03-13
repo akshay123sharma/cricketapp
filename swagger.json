@@ -237,9 +237,9 @@
           "consumes": ["multipart/form-data"],
           "parameters": [
               {
-                  "name": "mobile_number",
+                  "name": "name",
                   "in": "formData",
-                  "description": "Enter mobile number",
+                  "description": "Enter name",
                   "required": true,
                   "type": "string"
               },

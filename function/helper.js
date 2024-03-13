@@ -49,6 +49,45 @@ const createUser = async (data) => {
   }
 };
 
+
+const createPlayerByName = async (data) => {
+  try {
+      /*  Check user mobile number exist or not. */
+      const existingUserObj = await user.findOne({
+        where: { name: data.name },
+      });
+      if (!existingUserObj) {
+        const newUser = await user.create(data);
+        return true;
+      }
+      /*  Create  number with specific type */
+      const existingUserWithTypeObj = await user.findOne({
+        where: { name: data.name, type: data.type },
+      });
+      if (existingUserWithTypeObj) {
+        const token_update = await user.update(data, {
+          where: {
+            name: data.name,
+          },
+        });
+        return true;
+    } else {
+        const existingUserWithTypeObj = await user.findOne({
+          where: { name: data.name, is_scorer: 1 },
+        });
+        if(existingUserWithTypeObj){
+          return true;
+        }else{
+          return false;
+        }
+    }
+  } catch (error) {
+      throw error;
+  }
+};
+
+
+
 /* Get user detail by mobile number  */
 const userByMobileNumber = async(data) => {
     const userDataObj = await user.findOne({
@@ -58,6 +97,17 @@ const userByMobileNumber = async(data) => {
     });
     return userDataObj;
 };
+
+/* Get user detail by mobile number  */
+const userByName = async(data) => {
+  const userDataObj = await user.findOne({
+      where: {
+        name: data.name,
+      },
+  });
+  return userDataObj;
+};
+
 
 /* Get user detail by id   */
 const userById = async(data) => {
@@ -649,6 +699,7 @@ const playerFantasyPoints = async(player_id) => {
 module.exports = {
   createUser,
   userByMobileNumber,
+  createPlayerByName,
   userById,
   createTeam,
   createPlayer,
@@ -675,5 +726,6 @@ module.exports = {
   userDetailById,
   teamNameById,
   contestPlayerList,
-  playerFantasyPoints
+  playerFantasyPoints,
+  userByName
 };

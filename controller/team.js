@@ -45,12 +45,13 @@ createPlayer: async (req, res) => {
      try {
         const requestArr = req.body;
         const userObj = {
-            mobile_number: requestArr.mobile_number,
+            name: requestArr.name,
             type: 2
         };
-        const user_create = await helper.createUser(userObj);
+        // const user_create = await helper.createUser(userObj);
+        const user_create = await helper.createPlayerByName(userObj);
         if (user_create) {
-            const user_data = await helper.userByMobileNumber(userObj);
+            const user_data = await helper.userByName(userObj);
             const playerObj = {
                 user_id: user_data.id,
                 team_id: requestArr.team_id
@@ -62,6 +63,8 @@ createPlayer: async (req, res) => {
         commonFunction.successMesssage(res, "Error while Player created", {}); 
     }
 },
+
+
 
 playerSearch:async(req,res) => {
     const mobile_number = req.query.mobile_number;
