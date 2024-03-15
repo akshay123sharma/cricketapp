@@ -239,13 +239,13 @@ userTeamDetail:async(req,res) => {
                 userContests.selected_team[i].player_name = player.mobile_number;
             }
             userContests.selected_team[i].team_name = team.name;
-            if(selected_team[i].is_caption){
+            if(userContests.selected_team[i].is_caption){
                 userContests.selected_team[i].points = fantasy_points.fantasy_points * 2;
             }else{
                 userContests.selected_team[i].points = fantasy_points.fantasy_points;
             }
 
-            if(selected_team[i].is_vice_caption){
+            if(userContests.selected_team[i].is_vice_caption){
                 userContests.selected_team[i].points = fantasy_points.fantasy_points * 1.5;
             }else{
                 userContests.selected_team[i].points = fantasy_points.fantasy_points;
