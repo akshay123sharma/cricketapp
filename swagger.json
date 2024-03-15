@@ -1326,6 +1326,47 @@
             }
           }
         }
+      },
+      "/user_team_detail": {
+        "get": {
+          "tags": ["Contests"],
+          "summary": "user team with there points",
+          "operationId": "user_team_detail",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "contest_id",
+              "in": "query",
+              "description": "contest_id",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "user_id",
+              "in": "query",
+              "description": "user_id",
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
       }
     },
     "securityDefinitions": {
