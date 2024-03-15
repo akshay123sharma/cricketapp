@@ -178,6 +178,8 @@ const getAllUpcomingMatchList = async () => {
         if (team1 && team2) {
           match.team1_name = team1.name;
           match.team2_name = team2.name;
+          match.team2_photo = team2.team_photo;
+          match.team1_photo = team1.team_photo
           updatedUpcomingMatches.push(match);
         }
       }
@@ -210,6 +212,8 @@ const getAllCurrentMatchList = async () => {
         if (team1 && team2) {
           match.team1_name = team1.name;
           match.team2_name = team2.name;
+          match.team2_photo = team2.team_photo;
+          match.team1_photo = team1.team_photo
           updatedUpcomingMatches.push(match);
         }
       }
@@ -241,6 +245,8 @@ const getAllCompletedMatchList = async () => {
         if (team1 && team2) {
           match.team1_name = team1.name;
           match.team2_name = team2.name;
+          match.team2_photo = team2.team_photo;
+          match.team1_photo = team1.team_photo
           updatedUpcomingMatches.push(match);
         }
       }
