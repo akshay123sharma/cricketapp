@@ -190,7 +190,7 @@ userContest: async (req, res) => {
                 }
                 userContests[i].contest_detail = await contests.findOne({
                     where:{
-                        id: userContests[i].contest.id
+                        id: userContests[i].contest_id
                     },
                     raw:true,
                 }) 
