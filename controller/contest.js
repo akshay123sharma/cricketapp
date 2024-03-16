@@ -140,22 +140,6 @@ module.exports = {
     }
 },
 
-
-userContest: async (req, res) => {
-    try {
-        const requestArr = req.body;
-        const create_team = await contest_teams.create(requestArr);
-        if(create_team){
-            commonFunction.successMesssage(res, "Team created successfully", {});
-        }else{
-            commonFunction.errorMesssage(res, "Error while creating team", {});
-        }
-    } catch (error) {
-        commonFunction.errorMesssage(res, "Error while contest created", {}); 
-    }
- },
-
-
  contestDetail: async(req,res)=>{
      try {
         const contest_id = req.params.contest_id;
@@ -189,7 +173,6 @@ userContest: async (req, res) => {
             },
             raw:true
         });
-
         if (userContests.length > 0) {
             for (let i = 0; i < userContests.length; i++) {
                 userContests[i].player_list = JSON.parse(userContests[i].selected_team);
@@ -205,6 +188,12 @@ userContest: async (req, res) => {
                     }
                     userContests[i].player_list[j].team_name = team ? team.name : "";
                 }
+                userContests[i].contest_detail = await contests.findOne({
+                    where:{
+                        id: userContests[i].contest.id
+                    },
+                    raw:true,
+                }) 
             }
             commonFunction.successMesssage(res, "Contest  get successfully", userContests);
         }else{
