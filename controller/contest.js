@@ -256,7 +256,7 @@ contestWinnerList:async(req,res)=>{
                 contest_id: contest_id
             },
             raw: true,
-            order: [['total_fantasy_point', 'DESC']] // Order by total fantasy points in descending order
+            // order: [['total_fantasy_point', 'DESC']] // Order by total fantasy points in descending order
         });
         if (userContests.length > 0) {
             for (let i = 0; i < userContests.length; i++) {
