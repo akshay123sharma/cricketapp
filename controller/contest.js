@@ -244,6 +244,49 @@ userTeamDetail:async(req,res) => {
     }else{
         commonFunction.errorMesssage(res, "No data found", {});
     }
-}
+},
 
+contestWinnerList:async(req,res)=>{
+    const matchId = req.query.match_id;
+    const contest_id = req.query.contest_id;
+    // try {
+        const userContests = await contest_teams.findAll({
+            where: {
+                match_id: matchId,
+                contest_id: contest_id
+            },
+            raw: true,
+            order: [['total_fantasy_point', 'DESC']] // Order by total fantasy points in descending order
+        });
+        if (userContests.length > 0) {
+            for (let i = 0; i < userContests.length; i++) {
+                userContests[i].player_list = JSON.parse(userContests[i].selected_team);
+                let totalFantasyPoints = 0; // Initialize total fantasy points
+    
+                for (let j = 0; j < userContests[i].player_list.length; j++) {
+                    const playerId = userContests[i].player_list[j].player_id;
+                    const fantasy_points = await helper.playerFantasyPoints(playerId);
+    
+                    // Calculate points for the player
+                    let points = fantasy_points.fantasy_points;
+                    if (userContests[i].player_list[j].is_caption) {
+                        points *= 2; // Double points for caption
+                    }
+                    if (userContests[i].player_list[j].is_vice_caption) {
+                        points *= 1.5; // 1.5 times points for vice caption
+                    }
+    
+                    userContests[i].player_list[j].points = points; // Assign points to the player in the selected team
+                    totalFantasyPoints += points; // Add player's points to total fantasy points
+                }
+                userContests[i].total_fantasy_point = totalFantasyPoints; // Assign total fantasy points to the user contest object
+            }
+            commonFunction.successMesssage(res, "Contest get successfully", userContests);
+        } else {
+            commonFunction.errorMesssage(res, "No data", []);
+        }
+    // } catch (error) {
+    //     commonFunction.errorMesssage(res, "Error while getting contest", {});
+    // }
+}
 };
