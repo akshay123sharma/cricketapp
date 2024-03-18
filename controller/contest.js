@@ -310,9 +310,21 @@ userWalletUpdate: async(req,res) =>{
     }else{
         commonFunction.successMesssage(res, "error while updating wallet.", {}); 
     }
+},
+
+userWallet:async(req,res) =>{
+    const user_id = req.query.user_id;
+    const contestDetail = await user_wallets.findOne({
+        where:{
+            user_id:user_id
+        },
+        raw:true,
+    });
+    if(update_user){
+        commonFunction.successMesssage(res, "wallet get successfully", contestDetail); 
+    }else{
+        commonFunction.successMesssage(res, "no data.", {}); 
+    }
 }
-
-
-
 
 };

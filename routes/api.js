@@ -35,9 +35,11 @@ module.exports = function (app) {
     app.route("/apis/create_contest_team").post(verifyTokenMiddleware,contestModule.createContestTeam);
     app.route("/apis/contest_detail/:contest_id").get(verifyTokenMiddleware,contestModule.contestDetail);
     app.route("/apis/user_contest").get(verifyTokenMiddleware,contestModule.userContest);
-    app.route("/apis/user_team_detail").get(contestModule.userTeamDetail); //particular user team on click show.
-    app.route("/apis/contest_winner_list").get(contestModule.contestWinnerList); //particular user team on click show.
-    app.route("/apis/user_wallet_update").post(contestModule.userWalletUpdate);
+    app.route("/apis/user_team_detail").get(verifyTokenMiddleware,contestModule.userTeamDetail); //particular user team on click show.
+    app.route("/apis/contest_winner_list").get(verifyTokenMiddleware,contestModule.contestWinnerList); //particular user team on click show.
+    app.route("/apis/user_wallet_update").post(verifyTokenMiddleware,contestModule.userWalletUpdate);
+    app.route("/apis/user_wallet/:user_id").get(contestModule.userWallet);
+
 
 
 

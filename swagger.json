@@ -1460,6 +1460,40 @@
             }
           }
         }
+      },
+      "/user_wallet/{contest_id}": {
+        "get": {
+          "tags": ["Wallets"],
+          "summary": "User wallet get",
+          "operationId": "user_wallet",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "user_id",
+              "in": "path",
+              "description": "user_id",
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
       }
     },
     "securityDefinitions": {
