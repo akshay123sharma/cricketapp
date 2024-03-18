@@ -1232,6 +1232,13 @@
                 "type": "string"
               },
               {
+                "name": "contest_fee",
+                "in": "formData",
+                "description": "contest_fee",
+                "required": true,
+                "type": "string"
+              },
+              {
                 "name": "selected_team",
                 "in": "formData",
                 "description": "selected_team(user team json array here)",

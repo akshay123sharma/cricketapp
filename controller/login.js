@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 var db = require("../model");
 const secret = "mYs3cr3tK3yf0rJWTs!4fjnR2sT4PdPqL5y";
 const user = db.users;
+const user_wallets = db.user_wallets;
+
 
 module.exports = {
   /*  Create User /Login with number */
@@ -14,6 +16,12 @@ module.exports = {
         const user_create = await helper.createUser(requestArr);
         if (user_create) {
           const userDataObj = await helper.userByMobileNumber(requestArr);
+           if(req.body.type == 3){
+            const create_wallet = await helper.createUserWallet(userDataObj);
+           }
+
+
+
           commonFunction.successMesssage(res, "Login Successfully", userDataObj);
         } else {
           commonFunction.errorMesssage(res, "Login With Invalid Type", {});

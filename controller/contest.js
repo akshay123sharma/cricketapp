@@ -279,6 +279,7 @@ contestWinnerList:async(req,res)=>{
                     totalFantasyPoints += points; // Add player's points to total fantasy points
                 }
                 userContests[i].total_fantasy_point = totalFantasyPoints; // Assign total fantasy points to the user contest object
+                userContests[i].batter_name = await user.findByPk(userContests[i].user_id);
                 delete userContests[i].player_list;
             }
             userContests.sort((a, b) => b.total_fantasy_point - a.total_fantasy_point);

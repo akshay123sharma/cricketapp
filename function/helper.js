@@ -699,7 +699,22 @@ const playerFantasyPoints = async(player_id) => {
   return playerPointsObj;
 };
 
-
+const createUserWallet = async(userDataObj)=>{
+  let walletObj = await user_wallets.findOne({
+    where:{
+      user_id:userDataObj.id
+    },
+    raw:true
+  });
+  if(!walletObj){
+    let walletObj = {
+      user_id :userDataObj.id,
+      amount :0
+    }
+     await user_wallets.create(walletObj);
+     return true;
+  }
+}
 
 
 module.exports = {
@@ -733,5 +748,6 @@ module.exports = {
   teamNameById,
   contestPlayerList,
   playerFantasyPoints,
-  userByName
+  userByName,
+  createUserWallet
 };
