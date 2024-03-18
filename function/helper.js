@@ -96,6 +96,7 @@ const userByMobileNumber = async(data) => {
         where: {
           mobile_number: data.mobile_number,
         },
+        raw:true,
     });
     return userDataObj;
 };

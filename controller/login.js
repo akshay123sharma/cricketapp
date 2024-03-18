@@ -21,7 +21,6 @@ module.exports = {
                userDataObj.user_id = userDataObj.id;
                userDataObj.wallet = await helper.userWallet(userDataObj);
            }
-           console.log(userDataObj,"=============");
           commonFunction.successMesssage(res, "Login Successfully", userDataObj);
         } else {
           commonFunction.errorMesssage(res, "Login With Invalid Type", {});
