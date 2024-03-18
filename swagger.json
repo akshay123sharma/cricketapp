@@ -19,6 +19,10 @@
       {
         "name": "Contests",
         "description": "Contests Operations"
+      },
+      {
+        "name": "Wallets",
+        "description": "Wallets Operations"
       }
     ],
     "paths": {
@@ -1399,6 +1403,47 @@
               "name": "match_id",
               "in": "query",
               "description": "match_id",
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
+      },
+      "/user_wallet_update": {
+        "post": {
+          "tags": ["Wallets"],
+          "summary": "User wallet update",
+          "operationId": "user_wallet_update",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+            {
+              "name": "user_id",
+              "in": "formData",
+              "description": "user_id",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "amount",
+              "in": "formData",
+              "description": "amount",
               "required": false,
               "type": "string"
             }

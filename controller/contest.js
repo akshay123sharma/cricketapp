@@ -110,7 +110,7 @@ module.exports = {
             let user_wallet = await helper.userWallet(requestArr);
             let requestArr = {
                 amount : user_wallet.amount - contest_fee
-            }  
+            };
             await user_wallets.update(requestArr, {
                 where: { id: requestArr.id },
             });
@@ -294,5 +294,25 @@ contestWinnerList:async(req,res)=>{
     } catch (error) {
         commonFunction.errorMesssage(res, "Error while getting contest", {});
  }
+},
+
+
+userWalletUpdate: async(req,res) =>{
+    let requestArr = req.body;
+    let updateArr = {
+        amount : requestArr.amount
+    }
+    const update_user = await user_wallets.update(updateArr, {
+        where: { user_id: requestArr.user_id },
+    });
+    if(update_user){
+        commonFunction.successMesssage(res, "wallet updated successfully", {}); 
+    }else{
+        commonFunction.successMesssage(res, "error while updating wallet.", {}); 
+    }
 }
+
+
+
+
 };
