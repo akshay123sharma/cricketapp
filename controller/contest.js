@@ -264,7 +264,7 @@ contestWinnerList:async(req,res)=>{
     
                 for (let j = 0; j < userContests[i].player_list.length; j++) {
                     const playerId = userContests[i].player_list[j].player_id;
-                    const fantasy_points = await helper.playerFantasyPoints(playerId);
+                    const fantasy_points = await helper.playerFantasyPoints(playerId,matchId);
 
                     console.log(fantasy_points,"================1");
     

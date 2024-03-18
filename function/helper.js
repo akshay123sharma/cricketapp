@@ -689,10 +689,12 @@ const contestPlayerList = async(contest_id) => {
   return playerListArr;
 };
 
-const playerFantasyPoints = async(player_id) => {
+const playerFantasyPoints = async(player_id,matchId) => {
   const playerPointsObj = await score_board_batting.findOne({
       where: {
         player_id: player_id,
+        match_id:matchId
+
       },
       raw:true,
   });
