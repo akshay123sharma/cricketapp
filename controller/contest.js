@@ -313,7 +313,7 @@ userWalletUpdate: async(req,res) =>{
 },
 
 userWallet:async(req,res) =>{
-    const user_id = req.query.user_id;
+    const user_id = req.params.user_id;
     const contestDetail = await user_wallets.findOne({
         where:{
             user_id:user_id
