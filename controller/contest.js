@@ -249,7 +249,7 @@ userTeamDetail:async(req,res) => {
 contestWinnerList:async(req,res)=>{
     const matchId = req.query.match_id;
     const contest_id = req.query.contest_id;
-    // try {
+     try {
         const userContests = await contest_teams.findAll({
             where: {
                 match_id: matchId,
@@ -281,14 +281,14 @@ contestWinnerList:async(req,res)=>{
                 userContests[i].total_fantasy_point = totalFantasyPoints; // Assign total fantasy points to the user contest object
                 delete userContests[i].player_list;
             }
-           
+            userContests.sort((a, b) => b.total_fantasy_point - a.total_fantasy_point);
+
             commonFunction.successMesssage(res, "Contest get successfully", userContests);
         } else {
             commonFunction.errorMesssage(res, "No data", []);
         }
-    // } catch (error) {
-    //     commonFunction.errorMesssage(res, "Error while getting contest", {});
-    // }
+    } catch (error) {
+        commonFunction.errorMesssage(res, "Error while getting contest", {});
+ }
 }
-
 };
