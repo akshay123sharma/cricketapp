@@ -176,9 +176,6 @@ playerTwoDetailById : async  (data) => {
             updateObj.is_fifty = 1;
             fantasy_points += 12; // 4 points already added when reaching 30 runs.
         }
-    
-
-
         const strikeRate = ((playerDetail.run + (isExtra ? 0 : data.run)) / (playerDetail.balls + 1)) * 100;
         if(playerDetail.balls >= 5){
             if (strikeRate > 170 && playerDetail.strike_rate_70 == 0) {

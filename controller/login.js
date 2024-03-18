@@ -17,11 +17,8 @@ module.exports = {
         if (user_create) {
           const userDataObj = await helper.userByMobileNumber(requestArr);
            if(req.body.type == 3){
-            const create_wallet = await helper.createUserWallet(userDataObj);
+               await helper.createUserWallet(userDataObj);
            }
-
-
-
           commonFunction.successMesssage(res, "Login Successfully", userDataObj);
         } else {
           commonFunction.errorMesssage(res, "Login With Invalid Type", {});

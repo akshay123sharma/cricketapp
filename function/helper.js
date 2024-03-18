@@ -718,8 +718,17 @@ const createUserWallet = async(userDataObj)=>{
      await user_wallets.create(walletObj);
      return true;
   }
-}
+};
 
+const userWallet = async(requestArr)=>{
+  let walletObj = await user_wallets.findOne({
+    where:{
+      user_id:requestArr.user_id
+    },
+    raw:true
+  });
+  return walletObj;
+}
 
 module.exports = {
   createUser,
@@ -753,5 +762,6 @@ module.exports = {
   contestPlayerList,
   playerFantasyPoints,
   userByName,
-  createUserWallet
+  createUserWallet,
+  userWallet
 };

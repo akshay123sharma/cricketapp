@@ -14,12 +14,10 @@ const score_board_batting = db.score_board_batting;
 const score_board_bowling = db.score_board_bowlers;
 const contests = db.contests;
 const contest_teams = db.contest_teams;
-
-
+const user_wallets = db.user_wallets;
 contest_teams.belongsTo(user, {
     foreignKey: "user_id",
 });
-
 
 module.exports = {
     createContest: async (req, res) => {
@@ -109,6 +107,13 @@ module.exports = {
         const requestArr = req.body;
         const create_team = await contest_teams.create(requestArr);
         if(create_team){
+            let user_wallet = await helper.userWallet(requestArr);
+            let requestArr = {
+                amount : user_wallet.amount - contest_fee
+            }  
+            await user_wallets.update(requestArr, {
+                where: { id: requestArr.id },
+            });
             commonFunction.successMesssage(res, "Team created successfully", {});
         }else{
             commonFunction.errorMesssage(res, "Error while creating team", {});
@@ -221,7 +226,7 @@ userTeamDetail:async(req,res) => {
             const team_id  = userContests.selected_team[i].team_id;
             const player = await helper.userDetailById(player_id);
             const team = await helper.teamNameById(team_id);
-            const fantasy_points = await helper.playerFantasyPoints(player_id);
+            const fantasy_points = await helper.playerFantasyPoints(player_id,userContests.match_id);
             if (player.name !== null && player.name !== undefined) {
                 userContests.selected_team[i].player_name = player.name;
             } else {
