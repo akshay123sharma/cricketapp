@@ -264,10 +264,7 @@ contestWinnerList:async(req,res)=>{
     
                 for (let j = 0; j < userContests[i].player_list.length; j++) {
                     const playerId = userContests[i].player_list[j].player_id;
-                    const fantasy_points = await helper.playerFantasyPoints(playerId,matchId);
-
-                    console.log(fantasy_points,"================1");
-    
+                    const fantasy_points = await helper.playerFantasyPoints(playerId,matchId);    
                     // Calculate points for the player
                     let points = fantasy_points.fantasy_points;
                     if (userContests[i].player_list[j].is_caption) {
@@ -275,12 +272,9 @@ contestWinnerList:async(req,res)=>{
                     }
                     if (userContests[i].player_list[j].is_vice_caption) {
                         points *= 1.5; // 1.5 times points for vice caption
-                    }
-    
+                    }    
                     userContests[i].player_list[j].points = points; // Assign points to the player in the selected team
                     totalFantasyPoints += points; // Add player's points to total fantasy points
-
-                    console.log(totalFantasyPoints,"===================2");
                 }
                 userContests[i].total_fantasy_point = totalFantasyPoints; // Assign total fantasy points to the user contest object
                 userContests[i].batter_name = await user.findByPk(userContests[i].user_id);
