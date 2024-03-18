@@ -1461,7 +1461,7 @@
           }
         }
       },
-      "/user_wallet/{contest_id}": {
+      "/user_wallet/{user_id}": {
         "get": {
           "tags": ["Wallets"],
           "summary": "User wallet get",
