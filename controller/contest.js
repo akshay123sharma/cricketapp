@@ -320,7 +320,7 @@ userWallet:async(req,res) =>{
         },
         raw:true,
     });
-    if(update_user){
+    if(contestDetail){
         commonFunction.successMesssage(res, "wallet get successfully", contestDetail); 
     }else{
         commonFunction.successMesssage(res, "no data.", {}); 
