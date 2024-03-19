@@ -16,7 +16,7 @@ module.exports = {
         const user_create = await helper.createUser(requestArr);
         if (user_create) {
           const userDataObj = await helper.userByMobileNumber(requestArr);
-           if(req.body.type == 3){
+           if(req.body.type == 2){
                await helper.createUserWallet(userDataObj);
                userDataObj.user_id = userDataObj.id;
                userDataObj.wallet = await helper.userWallet(userDataObj);
