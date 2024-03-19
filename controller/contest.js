@@ -103,24 +103,25 @@ module.exports = {
 
 
    createContestTeam:async(req,res)=>{
-    try {
+    // try {
         const requestArr = req.body;
         const create_team = await contest_teams.create(requestArr);
         if(create_team){
             let user_wallet = await helper.userWallet(requestArr);
-            let requestArr = {
+            console.log(user_wallet,"===========");
+            let updateArr = {
                 amount : user_wallet.amount - contest_fee
             };
-            await user_wallets.update(requestArr, {
-                where: { id: requestArr.id },
+            await user_wallets.update(updateArr, {
+                where: { id: user_wallet.id },
             });
             commonFunction.successMesssage(res, "Team created successfully", {});
         }else{
             commonFunction.errorMesssage(res, "Error while creating team", {});
         }
-    } catch (error) {
-        commonFunction.errorMesssage(res, "Error while contest created", {}); 
-    }
+    // } catch (error) {
+    //     commonFunction.errorMesssage(res, "Error while contest created", {}); 
+    // }
  },
 
 
