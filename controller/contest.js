@@ -110,7 +110,7 @@ module.exports = {
             let user_wallet = await helper.userWallet(requestArr);
             console.log(user_wallet,"===========");
             let updateArr = {
-                amount : user_wallet.amount - contest_fee
+                amount : user_wallet.amount - requestArr.contest_fee
             };
             await user_wallets.update(updateArr, {
                 where: { id: user_wallet.id },
