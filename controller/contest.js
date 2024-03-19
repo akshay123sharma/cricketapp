@@ -314,7 +314,6 @@ userWalletUpdate: async(req,res) =>{
 
 userWallet:async(req,res) =>{
     const user_id = req.params.user_id;
-     console.log(user_id,"===============");
     const contestDetail = await user_wallets.findOne({
         where:{
             user_id:user_id
@@ -325,6 +324,25 @@ userWallet:async(req,res) =>{
         commonFunction.successMesssage(res, "wallet get successfully", contestDetail); 
     }else{
         commonFunction.successMesssage(res, "no data.", {}); 
+    }
+},
+
+edit_contest: async(req,res) =>{
+    const requestArr = req.body;
+    let updateArr = {
+        selected_team : requestArr.selected_team
+    }
+    const update_contest= await contest_teams.update(updateArr, {
+        where: { 
+            match_id: requestArr.match_id,
+            contest_id: requestArr.contest_id,
+            user_id:requestArr.user_id
+        },
+    });
+    if(update_contest){
+        commonFunction.successMesssage(res, "contest updated successfully", {}); 
+    }else{
+        commonFunction.successMesssage(res, "error while updating wallet.", {}); 
     }
 }
 

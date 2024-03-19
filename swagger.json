@@ -1494,6 +1494,61 @@
             }
           }
         }
+      },
+      "/edit_contest": {
+        "post": {
+          "tags": ["Contests"],
+          "summary": "edit contest team",
+          "operationId": "edit_contest",
+          "produces": ["application/json"],
+          "security": [
+            {
+              "APIKeyHeader": []
+            }
+          ],
+          "consumes": ["multipart/form-data"],
+          "parameters": [
+              {
+                "name": "user_id",
+                "in": "formData",
+                "description": "user_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "contest_id",
+                "in": "formData",
+                "description": "contest_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "match_id",
+                "in": "formData",
+                "description": "match_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "selected_team",
+                "in": "formData",
+                "description": "selected_team(user team json array here)",
+                "required": true,
+                "type": "string"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Logout  Successfully",
+              "schema": {
+                "type": "string"
+              }
+            },
+            "400": {
+              "description": "Error while logout"
+            }
+          }
+        }
       }
     },
     "securityDefinitions": {
