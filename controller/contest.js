@@ -273,7 +273,7 @@ contestWinnerList:async(req,res)=>{
                     id:contest_id
                 },
                 raw:true,
-            })
+            }),
         ]);
         if (userContests.length > 0) {
             for (let i = 0; i < userContests.length; i++) {
@@ -302,6 +302,10 @@ contestWinnerList:async(req,res)=>{
             if (userContests && is_result == 1 && contestObj.total_participants) {
                 const winnerUserId = userContests[0].user_id;
                 const contestFee = userContests[0].contest_fee;
+                const userWalletObj = await user_wallets.findOne({
+                    where:{ user_id:winnerUserId },
+                    raw:true,
+                });
                 if (contest_count == 1) {
                     await Promise.all([
                         contest_teams.update({ is_winner: 1 }, {
@@ -312,12 +316,15 @@ contestWinnerList:async(req,res)=>{
                         })
                     ]);
                 } else {
-                    const contest_amount = parseFloat(contestObj.entry_fee) * parseFloat(contest_count);
+                    const total_amount = parseFloat(contestObj.entry_fee) * parseFloat(contest_count);
+                    const winning_amount = parseFloat(total_amount) - parseFloat(contestObj.total_commission);
+                    const userWallet = parseFloat(userWalletObj.amount) + parseFloat(winning_amount);
+
                     await Promise.all([
                         contest_teams.update({ is_winner: 1 }, {
                             where: { user_id: winnerUserId, match_id: matchId, contest_id: contest_id },
                         }),
-                        user_wallets.update({ amount: parseFloat(contest_amount) - parseFloat(contestObj.total_commission) }, {
+                        user_wallets.update({ amount: userWallet }, {
                             where: { user_id: winnerUserId },
                         })
                     ]);
