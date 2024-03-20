@@ -1405,6 +1405,20 @@
               "description": "match_id",
               "required": false,
               "type": "string"
+            },
+            {
+              "name": "is_result",
+              "in": "query",
+              "description": "is_result",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "name": "contest_count",
+              "in": "query",
+              "description": "contest_count",
+              "required": false,
+              "type": "string"
             }
           ],
           "responses": {
