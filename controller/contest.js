@@ -316,9 +316,13 @@ contestWinnerList:async(req,res)=>{
                         })
                     ]);
                 } else {
+                    console.log(contest_count,"============0");
                     const total_amount = parseFloat(contestObj.entry_fee) * parseFloat(contest_count);
+                    console.log(total_amount,"============0");
                     const winning_amount = parseFloat(total_amount) - parseFloat(contestObj.total_commission);
+                    console.log(winning_amount,"===========1");
                     const userWallet = parseFloat(userWalletObj.amount) + parseFloat(winning_amount);
+                    console.log(userWallet,"===============2")
 
                     await Promise.all([
                         contest_teams.update({ is_winner: 1 }, {
