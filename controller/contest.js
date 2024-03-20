@@ -307,7 +307,7 @@ contestWinnerList:async(req,res)=>{
                     raw:true,
                 });
                 const total_amount = parseFloat(contestObj.entry_fee) * parseFloat(contest_count);
-                const userWallet = 0;
+                let userWallet = 0;
                 if (contest_count == 1) {
                     userWallet = parseFloat(userWalletObj.amount) + parseFloat(total_amount);
                 } else {
@@ -331,7 +331,7 @@ contestWinnerList:async(req,res)=>{
                     raw: true,
                 });
                 const total_amount = parseFloat(contestObj.entry_fee) * parseFloat(contest_count);
-                const userWallet = 0;
+                let userWallet = 0;
                 if (contest_count == 1) {
                     userWallet = parseFloat(userWalletObj.amount) + parseFloat(total_amount);
                 }else{
