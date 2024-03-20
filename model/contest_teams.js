@@ -26,6 +26,11 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
+      is_winner: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        default:0
+      },
       selected_team:{
         type:DataTypes.TEXT(),
         allowNull:true

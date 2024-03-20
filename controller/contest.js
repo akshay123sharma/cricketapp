@@ -26,11 +26,15 @@ module.exports = {
             const entryFeesArr = ['19', '49', '89', '179', '299', '525','27','77','230','380','5','100','150','170','300'];
             const memberArr    = ['4', '4', '4', '4', '4', '4','3','3','3','3','1000','20','36','370','40'];
             const prizePoolArr = ['70', '170', '300', '620', '1020', '1800','70','200','600','1020','4500','1680','4900','55000','9999'];
+            const totalPriceArr = ['76', '196', '356', '716', '1196', '2100','81','231','690','1140','5000','2000','5400','62900','12000'];
+            const comssionArr = ['6', '26', '56', '96', '176', '300','11','31','90','120','500','320','500','7900','2001'];
             for (let i = 0; i < entryFeesArr.length; i++) {
                 const contest = {
                     entry_fee: entryFeesArr[i],
                     total_participants: memberArr[i],
                     prize_pool: prizePoolArr[i],
+                    total_price: totalPriceArr[i],
+                    total_commission :comssionArr[i],
                     number_of_winners: 1,
                     match_id:requestArr.match_id
                 };
@@ -253,14 +257,24 @@ userTeamDetail:async(req,res) => {
 contestWinnerList:async(req,res)=>{
     const matchId = req.query.match_id;
     const contest_id = req.query.contest_id;
-     try {
-        const userContests = await contest_teams.findAll({
-            where: {
-                match_id: matchId,
-                contest_id: contest_id
-            },
-            raw: true,
-        });
+    const is_result = req.query.is_result;
+    const contest_count = req.query.contest_count;
+    //  try {
+        const [userContests, contestObj] = await Promise.all([
+            contest_teams.findAll({
+                where: {
+                    match_id: matchId,
+                    contest_id: contest_id
+                },
+                raw: true,
+            }),
+            contests.findOne({
+                where:{
+                    id:contest_id
+                },
+                raw:true,
+            })
+        ]);
         if (userContests.length > 0) {
             for (let i = 0; i < userContests.length; i++) {
                 userContests[i].player_list = JSON.parse(userContests[i].selected_team);
@@ -285,14 +299,37 @@ contestWinnerList:async(req,res)=>{
                 delete userContests[i].player_list;
             }
             userContests.sort((a, b) => b.total_fantasy_point - a.total_fantasy_point);
-
+            if (userContests && is_result == 1 && contestObj.total_participants) {
+                const winnerUserId = userContests[0].user_id;
+                const contestFee = userContests[0].contest_fee;
+                if (contest_count == 1) {
+                    await Promise.all([
+                        contest_teams.update({ is_winner: 1 }, {
+                            where: { user_id: winnerUserId, match_id: matchId, contest_id: contest_id },
+                        }),
+                        user_wallets.update({ amount: contestFee }, {
+                            where: { user_id: winnerUserId },
+                        })
+                    ]);
+                } else {
+                    const contest_amount = parseFloat(contestObj.entry_fee) * parseFloat(contest_count);
+                    await Promise.all([
+                        contest_teams.update({ is_winner: 1 }, {
+                            where: { user_id: winnerUserId, match_id: matchId, contest_id: contest_id },
+                        }),
+                        user_wallets.update({ amount: parseFloat(contest_amount) - parseFloat(contestObj.total_commission) }, {
+                            where: { user_id: winnerUserId },
+                        })
+                    ]);
+                }
+            }
             commonFunction.successMesssage(res, "Contest get successfully", userContests);
         } else {
             commonFunction.errorMesssage(res, "No data", []);
         }
-    } catch (error) {
-        commonFunction.errorMesssage(res, "Error while getting contest", {});
- }
+//     } catch (error) {
+//         commonFunction.errorMesssage(res, "Error while getting contest", {});
+//  }
 },
 
 
