@@ -299,40 +299,74 @@ contestWinnerList:async(req,res)=>{
                 delete userContests[i].player_list;
             }
             userContests.sort((a, b) => b.total_fantasy_point - a.total_fantasy_point);
-            if (userContests && is_result == 1 && contestObj.total_participants) {
+            // 3 or 4 spot process
+            if (userContests && is_result == 1 && contestObj.total_participants < 5) {
                 const winnerUserId = userContests[0].user_id;
-                const contestFee = userContests[0].contest_fee;
                 const userWalletObj = await user_wallets.findOne({
                     where:{ user_id:winnerUserId },
                     raw:true,
                 });
+                const total_amount = parseFloat(contestObj.entry_fee) * parseFloat(contest_count);
+                const userWallet = 0;
                 if (contest_count == 1) {
-                    await Promise.all([
-                        contest_teams.update({ is_winner: 1 }, {
-                            where: { user_id: winnerUserId, match_id: matchId, contest_id: contest_id },
-                        }),
-                        user_wallets.update({ amount: contestFee }, {
-                            where: { user_id: winnerUserId },
-                        })
-                    ]);
+                    userWallet = parseFloat(userWalletObj.amount) + parseFloat(total_amount);
                 } else {
-                    console.log(contest_count,"============0");
-                    const total_amount = parseFloat(contestObj.entry_fee) * parseFloat(contest_count);
-                    console.log(total_amount,"============0");
                     const winning_amount = parseFloat(total_amount) - parseFloat(contestObj.total_commission);
-                    console.log(winning_amount,"===========1");
-                    const userWallet = parseFloat(userWalletObj.amount) + parseFloat(winning_amount);
-                    console.log(userWallet,"===============2")
-
-                    await Promise.all([
-                        contest_teams.update({ is_winner: 1 }, {
-                            where: { user_id: winnerUserId, match_id: matchId, contest_id: contest_id },
-                        }),
-                        user_wallets.update({ amount: userWallet }, {
-                            where: { user_id: winnerUserId },
-                        })
-                    ]);
+                    userWallet = parseFloat(userWalletObj.amount) + parseFloat(winning_amount);
                 }
+                await Promise.all([
+                    contest_teams.update({ is_winner: 1 }, {
+                        where: { user_id: winnerUserId, match_id: matchId, contest_id: contest_id },
+                    }),
+                    user_wallets.update({ amount: userWallet }, {
+                        where: { user_id: winnerUserId },
+                    })
+                ]);
+            }
+            // maximum spot.
+            if (userContests && is_result === 1 && contestObj.total_participants > 19) {
+                const winnerUserId = userContests[0].user_id;
+                const userWalletObj = await user_wallets.findOne({
+                    where: { user_id: winnerUserId },
+                    raw: true,
+                });
+                const total_amount = parseFloat(contestObj.entry_fee) * parseFloat(contest_count);
+                const userWallet = 0;
+                if (contest_count == 1) {
+                    userWallet = parseFloat(userWalletObj.amount) + parseFloat(total_amount);
+                }else{
+                    let winning_percentage = 0;
+                    switch (contestObj.total_participants) {
+                        case 1000:
+                            winning_percentage = 10;
+                            break;
+                        case 20:
+                            winning_percentage = 16;
+                            break;
+                        case 36:
+                            winning_percentage = 9;
+                            break;
+                        case 370:
+                            winning_percentage = 12;
+                            break;
+                        case 40:
+                            winning_percentage = 16;
+                            break;
+                        default:
+                            winning_percentage = 0; // Handle default case if necessary
+                            break;
+                    }
+                    const winning_amount = (winning_percentage / 100) * total_amount;
+                    userWallet = parseFloat(userWalletObj.amount) + parseFloat(winning_amount);
+                }
+                await Promise.all([
+                    contest_teams.update({ is_winner: 1 }, {
+                        where: { user_id: winnerUserId, match_id: matchId, contest_id: contest_id },
+                    }),
+                    user_wallets.update({ amount: userWallet }, {
+                        where: { user_id: winnerUserId },
+                    })
+                ]);
             }
             commonFunction.successMesssage(res, "Contest get successfully", userContests);
         } else {
