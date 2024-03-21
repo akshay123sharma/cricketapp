@@ -315,7 +315,7 @@ contestWinnerList:async(req,res)=>{
                     userWallet = parseFloat(userWalletObj.amount) + parseFloat(winning_amount);
                 }
                 await Promise.all([
-                    contest_teams.update({ is_winner: 1 }, {
+                    contest_teams.update({ is_winner: 1 ,wallet_add :1}, {
                         where: { user_id: winnerUserId, match_id: matchId, contest_id: contest_id },
                     }),
                     user_wallets.update({ amount: userWallet }, {
@@ -360,7 +360,7 @@ contestWinnerList:async(req,res)=>{
                     userWallet = parseFloat(userWalletObj.amount) + parseFloat(winning_amount);
                 }
                 await Promise.all([
-                    contest_teams.update({ is_winner: 1 }, {
+                    contest_teams.update({ is_winner: 1 ,wallet_add :1}, {
                         where: { user_id: winnerUserId, match_id: matchId, contest_id: contest_id },
                     }),
                     user_wallets.update({ amount: userWallet }, {
