@@ -201,7 +201,17 @@ userContest: async (req, res) => {
                         id: userContests[i].contest_id
                     },
                     raw:true,
-                }) 
+                });
+                if(userContests[i].contest_detail){
+                    const count = await contest_teams.count({
+                        where: {
+                            contest_id: userContests[i].contest_id,
+                            match_id:matchId
+                        },
+                        raw:true,
+                    });
+                    userContests[i].contest_detail.count = count;
+                }   
             }
             commonFunction.successMesssage(res, "Contest  get successfully", userContests);
         }else{
