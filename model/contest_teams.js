@@ -31,6 +31,11 @@ module.exports = function (sequelize, DataTypes) {
         allowNull: true,
         defaultValue:0
       },
+      wallet_add:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue:0
+      },
       selected_team:{
         type:DataTypes.TEXT(),
         allowNull:true

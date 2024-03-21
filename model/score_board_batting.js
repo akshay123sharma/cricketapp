@@ -83,7 +83,7 @@ module.exports = function (sequelize, DataTypes) {
       fantasy_points: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        defaultValue: 2,
+        defaultValue: 4,
       },
       is_thirty: {
         type: DataTypes.INTEGER,

@@ -7,6 +7,7 @@ const verifyTokenMiddleware = (req, res, next) => {
 };
 
 module.exports = function (app) {
+     app.route("/fantasy_points").get(userModule.fantasyPoints);
     app.route("/apis/login").post(userModule.login);
     app.route("/apis/edit_profile").post(verifyTokenMiddleware,userModule.edit_profile);
     app.route("/apis/log_out").post(verifyTokenMiddleware,userModule.logOut);

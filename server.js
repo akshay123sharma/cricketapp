@@ -32,15 +32,12 @@ app.use(cors({
 
 
 app.set("views", path.join(__dirname, "views"));
-
-console.log(path.join(__dirname, "views"), "==============path");
-
 app.set("view engine", "ejs");
 
-app.get('/example', (req, res) => {
-  console.log("AKSHAY");
-  res.render('front/fantasy_point');
-});
+// app.get('/example', (req, res) => {
+//   console.log(path.join(__dirname, "views", "front/fantasy_point.ejs"));
+//   res.render('front/fantasy_point.ejs');
+// });
 
 const io = require('socket.io')(http,{
   cors: {

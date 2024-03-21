@@ -8,6 +8,14 @@ const user_wallets = db.user_wallets;
 
 
 module.exports = {
+
+
+  fantasyPoints: async(req,res)=>{
+    res.render("front/fantasy_point", {
+    });
+  },
+
+
   /*  Create User /Login with number */
   login: async (req, res) => {
     try {
