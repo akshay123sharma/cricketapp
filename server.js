@@ -7,7 +7,7 @@ const app = express();
 const fileUpload = require("express-fileupload");
 const sequelize = require("./config/config.json");
 const models = require("./model");
-// models.sequelize.sync({ force: true });
+models.sequelize.sync({ force: true });
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 var http = require("http").createServer(app);

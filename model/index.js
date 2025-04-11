@@ -23,7 +23,7 @@ if (config.use_env_variable) {
 }
 
 // Ensure to use sync({ alter: true }) if you want to apply changes to the existing tables
-sequelize.sync({ alter: true });
+// sequelize.sync({ alter: true });
 
 fs.readdirSync(__dirname)
   .filter((file) => {
