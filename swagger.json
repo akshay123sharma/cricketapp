@@ -5,7 +5,7 @@
       "version": "1.0.0",
       "title": "Cricket App"
     },
-    "host": "44.194.8.242",
+    "host": "44.194.8.242:5000",
     "basePath": "apis",
     "tags": [
       {
